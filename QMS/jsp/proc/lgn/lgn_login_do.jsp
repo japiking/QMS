@@ -46,7 +46,7 @@ public class lgn_login_do implements SpbBiz {
     		Map<String,String> userMap	= qmsDB.selectOne("QMS_LOGIN.USERINFO_R001", param);
     		
     		// 회원가입 화면으로 이동
-    		if( userList.size() == 0 ) {
+    		if( userMap == null || userMap.isEmpty() ) {
     			throw new Exception("등록된 사용자가 아니거나, 패스워드가 일치 하지 않습니다.");
     		}
     		
