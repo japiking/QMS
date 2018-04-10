@@ -14,17 +14,17 @@
 	<environments default="development">
 		<environment id="development">
 			<transactionManager type="JDBC"/>
+			<!-- 
 				<dataSource type="JNDI">
 					<property name="data_source" value="java/qmsDB"/>
 				</dataSource> 
-			 <!--	
+			-->
 				<dataSource type="POOLED">
-					<property name="driver" value="org.apache.derby.jdbc.ClientDriver"/>
-					<property name="url" value="jdbc:derby://172.20.30.126:1527/qmsDB"/>
-					<property name="username" value="qms"/>
-					<property name="password" value="qms"/>
+					<property name="driver" value="org.mariadb.jdbc.Driver"/>
+					<property name="url" value="jdbc:mariadb://localhost:3306/qmsDB"/>
+					<property name="username" value="root"/>
+					<property name="password" value="1234qwer"/>
 				</dataSource>
-			 -->
 			<!--  
 			<dataSource type="POOLED">
 				<property name="driver" value="com.ibm.db2.jcc.DB2Driver"/>
