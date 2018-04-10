@@ -26,6 +26,7 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/poi-scratchpad-3.11-20141221.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/javax.servlet-3.0.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/javax.servlet.jsp.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
