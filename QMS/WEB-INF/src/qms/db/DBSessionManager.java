@@ -34,7 +34,12 @@ public class DBSessionManager implements SqlSession{
 	public DBSessionManager(){
 		try{
 			sqlSession = DBConnectManager.getInstance().getDBSession().openSession(true);
+			
+			if(sqlSession == null) { 
+				LOG.debug("sqlSession is Null");
+			}
 		} catch(Exception e){
+			e.printStackTrace();
 			if(sqlSession != null) try{sqlSession.close();} catch(Exception e1){}
 		}
 	}
