@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR" />
+	<title>working list</title>
+	<script src="../js/jquery-1.7.1.min.js"></script>
+	<script src="../js/guide.js"></script>
+	<link rel="stylesheet" href="../css/guide.css" />
+	<script type="text/javascript"></script>
+</head>
+<body>
+<div class="wrap">
+
+	<h2>formatUtil.date(date, spt)</h2>
+	<div class="xmp">
+	년월일을 포메팅 처리 한다. spt 를 입력 할경우 구분자로 사용한다. [ default : '-' ]
+	<xmp>
+var date = "20140213";
+formatUtil.date(date);		-> return : "2014-02-13";
+formatUtil.date(date, "/");	-> return : "2014/02/13";
+	</xmp></div>
+	
+	<h2>formatUtil.time(time, spt)</h2>
+	<div class="xmp">
+	시분초를 포메팅 처리 한다. spt 를 입력 할경우 구분자로 사용한다. [ default : ':' ]
+	<xmp>
+var time = "170005";
+formatUtil.time(time);		-> return : "17:00:05";
+formatUtil.time(time, "/");	-> return : "17/00/05";
+	</xmp></div>
+	
+	<h2>formatUtil.number(no, fixNum, flag)</h2>
+	<div class="xmp">
+	3자리 단위로 숫자에 , 를 추가한다.
+	소수점이 존재할 경우 fixNum 을 이용하여 소수점 자리수를 설정 하고
+	flag 값을 이용하여  [C] 올림, [R] 반올림, [F] 내림 처리 한다. [ default : 'F' ]
+	내부에서 formatUtil.cutFristZero(numStr) 을 호출 하여 처리 됨.
+	<xmp>
+var num = "10000.125";
+formatUtil.number(num);		-> return : "10,000.125";
+formatUtil.number(num, 2, 'C');	-> return : "10,000.13";
+formatUtil.number(num, 2, 'R');	-> return : "10,000.13";
+formatUtil.number(num, 2, 'F');	-> return : "10,000.12";
+	</xmp></div>
+	
+	<h2>formatUtil.cutFristZero(numStr)</h2>
+	<div class="xmp">
+	숫자 앞에 0 를 제거 한다. - 금액인 경우 0 제거후 리턴한다.
+	<xmp>
+var numStr1 = "00010000";
+formatUtil.cutFristZero(numStr1);	-> return : "10000";
+var numStr2 = "+00010000";
+formatUtil.cutFristZero(numStr2);	-> return : "10000";
+var numStr3 = "-00010000";
+formatUtil.cutFristZero(numStr3);	-> return : "-10000";
+	</xmp></div>
+	
+	<h2>formatUtil.kebAcctNo(acctNo, bankCode)</h2>
+	<div class="xmp">
+	외환은행 계좌 포멧으로 포메팅 하여 리턴한다. ( bankCode 가 '005'가 아닐경우 포멧팅을 시키지 않는다. )
+	외환은행 일때 '005', 타행 계좌는 포메팅 처리 하지 않고 리턴 시킴
+	※ 주의사항 : 타행 계좌인데 외환 코드로 셋팅 해버리면 계좌 포메팅이 될수도 있음. 타행은 계좌 포메팅 처리 하지 않음. 
+	<xmp>
+var acctNo = "611016648917";
+formatUtil.kebAcctNo(acctNo); -> return : "611016648917";
+formatUtil.kebAcctNo(acctNo, "005"); -> return : "611-016648-917";
+formatUtil.kebAcctNo(acctNo, "001"); -> return : "611016648917";
+	</xmp></div>
+	
+	<h2>formatUtil.zipNo(zipNo)</h2>
+	<div class="xmp">
+	우편번호를 포메팅 처리한다.
+	<xmp>
+var zipNo = "123456";
+formatUtil.zipNo(zipNo); -> return : "123-456";
+	</xmp></div>
+	
+	<h2>formatUtil.phone(num, hiddenFlag)</h2>
+	<div class="xmp">
+	전화(휴대폰)번호를 포메팅 한다.
+	hiddenFlag 가 true 일때 뒤번호를 **** 처리 한다.
+	<xmp>
+var phone1 = "0531234567";
+formatUtil.phone(phone1); -> return : "053-123-4567";
+var phone2 = "05312345678";
+formatUtil.phone(phone2); -> return : "053-1234-5678";
+var phone3 = "021234567";
+formatUtil.phone(phone3); -> return : "02-123-4567";
+var phone4 = "0212345678";
+formatUtil.phone(phone4); -> return : "02-1234-5678";
+var phone5 = "01012345678";
+formatUtil.phone(phone5); -> return : "010-1234-5678";
+var phone6 = "01012345678";
+formatUtil.phone(phone5, true); -> return : "010-1234-****";
+	</xmp></div>
+	
+	<h2>formatUtil.bizNum(bizNum, hiddenFlag)</h2>
+	<div class="xmp">
+	사업자 번호를 포메팅한다.
+	hiddenFlag 가 true 일때 뒤번호를 **** 처리 한다.
+	<xmp>
+var bizNum1 = "9990123456789";
+formatUtil.bizNum(bizNum1); -> return : "012-34-56789";
+var bizNum2 = "0123456789";
+formatUtil.bizNum(bizNum2); -> return : "012-34-56789";
+var bizNum3 = "0123456789";
+formatUtil.bizNum(bizNum3, true); -> return : "012-34-*****";
+	</xmp></div>
+	
+	
+	<h2>
+		=========================================================================================</br>
+		As is 함수 To be 로 변환 처리 ==============================================================</br>
+		=========================================================================================
+	</h2>
+	
+	<h2>formatUtil.fxFormatMoney(curr, str, pt, addcurr)</h2>
+	<div class="xmp">
+	FxUtils 에 formatMoney 함수를 재구현.
+	<xmp>
+	</xmp></div>	
+		
+</div>
+<!-- //wrap -->
+</body>
+</html>

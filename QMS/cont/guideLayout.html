@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>working list</title>
+	<script src="../js/jquery-1.7.1.min.js"></script>
+	<script src="../js/guide.js"></script>
+	<link rel="stylesheet" href="../css/guide.css" />
+	<style type="text/css">
+	*{margin:0; padding:0;}
+	.gLayout div{padding:10px; font:bold 14px Tahoma; color:#2D2C2D;}
+	.gWrap{width:650px; margin:0; padding:10px; border:1px solid #bdbdbd; background:#f7f7f7;}
+	.gHeader {overflow:hidden; width:auto; margin:10px 0; padding:10px; border:2px solid #bfbfbf; background:#e5e5e5; }
+	.gHeader .gHead {overflow:hidden; padding:10px; margin:10px 0; border:1px solid #bdbdbd; background:#f6f6f6; }
+	.gHeader .util {float:right; width:100px; margin-bottom:10px; padding:5px 0; border:1px solid #bdbdbd; background:#fff; text-align:center;}
+	.gHeader .gnb {float:right; width:100%; padding:5px 0 10px 0; border:1px solid #bdbdbd; background:#fff; text-align:center;}
+	.gContainer {width:auto; margin:10px 0; padding:10px; border:2px solid #bfbfbf; background:#e5e5e5;}
+	.gLnb, .gContent{height:200px; border:1px solid #bdbdbd; background:#fff;}
+	.gLnb{float:left; width:180px; }
+	.gContent{float:right; width:380px; }
+	.gFooter{width:auto; padding:10px; border:2px solid #bfbfbf; background:#e5e5e5; text-align:left;}
+	.gFooter .gFoot {overflow:hidden; padding:10px; margin:10px 0; border:1px solid #bdbdbd; background:#f6f6f6; }
+	.clear{display:block; float:none; clear:both; height:0; width:100%; font-size:0 !important; line-height:0 !important; overflow:hidden; margin:0 !important; padding:0 !important;}
+	</style>
+</head>
+<body>
+<div class="wrap">
+
+	<h1 class="guideTit">2. Layout</h1>
+	
+	<h2>2.1. 서브화면</h2>
+
+	<h3>2.1.1. 서브화면 구조</h3>
+
+	<div class="gLayout mgB20">
+	<div class="gWrap">
+		#wrap.bz
+		<!-- <div class="gHeader">#newHeader
+			<div class="gHead">
+				.head
+				<div class="util">.util</div>
+				<div class="gnb">#gnb</div>
+			</div>
+		</div> -->
+		<div class="gHeader">#newHeader
+			<div class="util">.util</div>
+			<div class="gnb">#gnb</div>
+		</div>
+		<div class="gContainer">
+			#container <br /><br />
+			<div class="gLnb">
+				#lnb
+			</div>
+			<div class="gContent">
+				#contents
+			</div>
+			<div class="clear">
+			</div>
+		</div>
+		<div class="gFooter">
+			#newFooter
+			<div class="gFoot">.foot</div>
+		</div>
+	</div>
+	</div>
+	
+	
+
+	<h3>2.1.2. 서브화면 구조 설명</h3>
+	<ul class="list01">
+		<li><strong>#wrap.bz</strong> : 전체를 감싸는 영역</li>
+		<li><strong>#newHeader > .head</strong> : Header 영역 레이아웃 Div</li>
+		<li><strong>.util</strong> : util메뉴 Div</li>
+		<li><strong>#gnb</strong> : Gnb메뉴 Div</li>
+		<li><strong>#container</strong> : Lnb와 Contents 영역을 묶어주는 레이아웃 Div</li>
+		<li><strong>#lnb</strong> : Lnb메뉴 Div</li>
+		<li><strong>#contents</strong> : 컨텐츠 영역 레이아웃 Div</li>
+		<li><strong>#newFooter > .foot</strong> : Footer 영역 레이아웃 Div</li>
+	</ul>
+	
+
+	<h2>2.2. 팝업화면</h2>
+
+	<h3>2.2.1. 팝업화면 구조</h3>
+	<div class="gLayout mgB20">
+	<div class="gWrap">
+		#popWrap02.bz
+		<div class="gHeader">#header
+			<!-- <div class="gHead">
+				H1
+			</div> -->
+		</div>
+		<div class="gContainer" style="height:150px;">
+			#container <br /><br />
+			<div class="clear">
+			</div>
+		</div>
+		<div class="gFooter">
+			.closePop
+		</div>
+	</div>
+	</div>
+	
+	
+
+	<h3>2.2.2. 팝업화면 구조 설명</h3>
+
+	<ul class="list01">
+		<li><strong>#popWrap02.bz</strong> : 전체를 감싸는 영역</li>
+		<li><strong>#header</strong> : H1(화면 타이틀) 영역</li>
+		<li><strong>#container</strong> : 컨텐츠 영역 레이아웃 Div</li>
+		<li><strong>.closePop </strong> : 화면의 하단에 위치하며, 닫기 버튼이 들어감</li>
+	</ul>
+
+ 
+
+ 
+
+ 
+
+
+
+
+
+
+
+
+</div><!-- //wrap -->
+</body>
+</html>

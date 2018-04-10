@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR" />
+	<title>working list</title>
+	<script src="../js/jquery-1.7.1.min.js"></script>
+	<script src="../js/guide.js"></script>
+	<link rel="stylesheet" href="../css/guide.css" />
+	<script type="text/javascript">
+		
+	</script>
+</head>
+<body>
+<div class="wrap">
+
+	<h2>stringUtil.isNull(obj)</h2>
+	<div class="xmp">
+	null , undefined, "undefined", "" 일때  true 를 리턴한다.
+	<xmp>	
+var objT = null;
+var objF = "False";
+stringUtil.isNull(objT);	-> return : true
+stringUtil.isNull(objF);	-> return : false	
+	</xmp></div>
+	
+	<h2>stringUtil.null2void(obj, str)</h2>
+	<div class="xmp">
+	null , undefined, "undefined", "" 일때  "" 을 리턴한다.
+	리턴값이 "" 이면서 str 에 값이 있을 경우 str 로 대체하여 리턴한다.
+	<xmp>	
+var obj = null;
+stringUtil.isNull(obj);			-> return : ""
+stringUtil.isNull(obj, "Sample");	-> return : "Sample"	
+	</xmp></div>
+	
+	<h2>stringUtil.isBlank(obj)</h2>
+	<div class="xmp">
+	입력된 값이 "" 인지 true , false 로 리턴한다.
+	<xmp>	
+var str = "";
+stringUtil.isBlank(str);	-> return : true
+	</xmp></div>	
+	
+	<h2>stringUtil.trim(str)</h2>
+	<div class="xmp">
+	문자열 뒤에 공백을 제거 한다.
+	<xmp>
+var str = "Sample  ";
+stringUtil.trim(str);	-> return : "Sample"
+	</xmp></div>
+	
+	<h2>stringUtil.byteSubStr(str , byteLn)</h2>
+	<div class="xmp">
+	한글 2byte, 영문(숫자) 1byte 를 기준으로 substring 한다.
+	영멱에 포함된 마지막 문자가 한글일 경우 1byte 만 짜르면 한글 깨짐으로 인해 2byte 제외
+	<xmp>
+var str = "가나다abc123가나다";
+stringUtil.byteSubStr(str , 4);		-> return : "가나";
+stringUtil.byteSubStr(str , 8);		-> return : "가나다ab";
+stringUtil.byteSubStr(str , 10);	-> return : "가나다abc1";
+stringUtil.byteSubStr(str , 14);	-> return : "가나다abc123가";
+stringUtil.byteSubStr(str , 15);	-> return : "가나다abc123가";
+	</xmp></div>
+	
+	<h2>stringUtil.fullChar(str)</h2>
+	<div class="xmp">
+	1byte 문자를 2byte 문자로 변환 한다. [ 반각 -> 전각 처리 ]
+	<xmp>
+var str = "012ABC가나다";
+stringUtil.fullChar(str);	-> return : "０１２ＡＢＣ가나다";
+	</xmp></div>
+	
+	<h2>stringUtil.halfChar(str)</h2>	
+	<div class="xmp">
+	2byte 문자를 1byte 문자로 변환 한다. [ 전각 -> 반각 처리 ]	
+	<xmp>		
+var str = "０１２ＡＢＣ가나다";
+stringUtil.fullChar(str);	-> return : "012ABC가나다";	
+	</xmp></div>
+	
+	<h2>stringUtil.lPad(str, len, attatch)</h2>	
+	<div class="xmp">
+	문자열의 좌측에 len 만큼 attatch 를 붙여서 리턴한다.
+	<xmp>
+var str = "101";
+stringUtil.lPad(str, 2, "0");	-> return : "00101";
+	</xmp></div>
+	
+	<h2>stringUtil.rPad(str, len, attatch)</h2>
+	<div class="xmp">
+	문자열의 우측에 len 만큼 attatch 를 붙여서 리턴한다.
+	<xmp>
+var str = "101";
+stringUtil.rPad(str, 2, "0");	-> return : "10100";
+	</xmp></div>
+	
+	<h2>stringUtil.replaceInjection(str)</h2>	
+	<div class="xmp">
+	스크립트를 강제로 실행 시킬수 있는 문자를  replace 시킨다.
+	<xmp>		
+var str = "가나다<scipt>alert("Test");</scipt>";
+stringUtil.replaceInjection(str);	-> return : "가나다&lt;scipt&gt;alert("Test");&lt;/scipt&gt;";
+	</xmp></div>
+	
+</div>
+<!-- //wrap -->
+</body>
+</html>

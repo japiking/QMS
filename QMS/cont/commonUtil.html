@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR" />
+	<title>working list</title>
+	<script src="../js/jquery-1.7.1.min.js"></script>
+	<script src="../js/guide.js"></script>
+	<link rel="stylesheet" href="../css/guide.css" />
+	<script type="text/javascript"></script>
+</head>
+<body>
+<div class="wrap">
+
+	<h2>commonUtil.makeSelectBox( id, dataList, key, val, fn, selectedValue, isClear )</h2>
+	<div class="xmp">
+입력 받은 ID 밑에 dataList 로 option 을 생성한다.</br>	
+&nbsp;&nbsp;@param id       		(필수)콤보가 그려질 select 엘리먼트의 id</br>
+&nbsp;&nbsp;@param dataList 		(필수)콤보를 그릴 데이터 json array</br>
+&nbsp;&nbsp;@param key      		(옵션)option 엘리먼트의 value에 셋팅 될 데이터의 키 ( default : "code" )</br>
+&nbsp;&nbsp;@param val      		(옵션)option 엘리먼트의 text에 셋팅 될 데이터의 키   ( default : "value" )</br>
+&nbsp;&nbsp;@param fn       		(옵션)text의 포멧팅 함수 parma1:로우데이터, param2:value</br>
+&nbsp;&nbsp;@param selectedValue	(옵션)selected 될 값</br>
+&nbsp;&nbsp;@param isClear  (옵션:default=false)대상 select 에 기존 option 항목의 삭제 여부.
+	<xmp>
+var dataList = [{ "key" : "123", "val" : "일이삼" }, { "key" : "345", "val" : "삼사오" }];	
+commonUtil.makeSelectBox( "selectBoxID", dataList );
+commonUtil.makeSelectBox( "selectBoxID", dataList, "key", "val" );
+commonUtil.makeSelectBox( "selectBoxID", dataList, "", "", null, "123" );	//123 기본 선택 된 상태서 만들어짐
+commonUtil.makeSelectBox( "accNum", data["_BeginLoop_F"], "code", "value", function(r,v){			
+		return formatUtil.kebAcctNo(v, r["BANK_CODE"]);	 // v 는 현재 인자값(Cell), r 은 해당 로우 데이터 전체
+	}, "기본선택값");	
+	
+	
+* 콤보를 그릴 데이터 리스트 외에 <option>항목에 아래와 같이 '전체' 또는 '선택' 등의 항목을 추가 하고자 할경우
+  아래처럼 html 코드에 추가할 항목을 미리 선언해놓고 commonUtil.makeSelectBox 함수를 호출합니다.
+<select title="타이틀" style="width:160px;" class="select" id="test">
+	<option value="">전체</option>
+</select>
+
+*기존에 그려져있는 옵션항목을 삭제후 셋팅할 필요가 있을경우
+ commonUtil.makeSelectBox 함수의 7번째 인자에 true 값을 셋팅한다.
+	
+	</xmp></div>
+	
+	<h2>commonUtil.currCode2CurrName( msg )</h2>
+	<div class="xmp">
+통화 코드를 받아 통화명을 리턴한다.
+	<xmp>
+commonUtil.currCode2CurrName( "000" );	-> return : "KRW"
+commonUtil.currCode2CurrName( "001" );	-> return : "USD"
+	</xmp></div>
+	
+	<h2>commonUtil.currName2CurrCode( msg )</h2>
+	<div class="xmp">
+commonUtil.currCode2CurrName( "KRW" );	-> return : "000"
+commonUtil.currCode2CurrName( "USD" );	-> return : "001"		
+	</div>	
+	
+	<h2></h2>
+	<div class="xmp">
+		
+	</div>		
+</div>
+<!-- //wrap -->
+</body>
+</html>

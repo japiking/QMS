@@ -1,0 +1,92 @@
+@charset "UTF-8";
+
+/* default */
+html, body {height:100%;}
+body {padding:0; margin:0; background:#fff; font-size:12px; line-height:140%; font-family:"돋움", Dotum, "굴림", Gulim, "Lucida Grande", Tahoma, Verdana, AppleGothic, sans-serif;}
+h1, h2, h3, h4, h5, h6,  div, p, blockquote, pre, address,  ul, ol, li, dl, dt, dd,  table, caption, th, td,  form, fieldset, legend, thead, tbody, hr { margin:0; padding:0; font-family:돋움, Dotum, 굴림, Gulim, AppleGothic, Sans-serif;}
+fieldset {display:block; margin:0; padding:0; border:0;}
+legend {position:absolute; visibility:hidden; width:0; height:0; overflow:hidden; font-size:0;}
+form {margin:0; padding:0;}
+input {height:18px; line-height:18px; padding:0 5px; margin:0; border:1px solid #acacac; border-right-color:#dddddd; border-bottom-color:#dddddd; vertical-align:middle; font-family:"돋움", Dotum, "굴림", Gulim, "Lucida Grande", Tahoma, Verdana, AppleGothic, sans-serif;}
+input.radio, 
+input[type=radio].input_check,
+input[type=radio]{width:13px !important; height:13px !important; margin:-1px 0 0 0; padding:0; border:0; vertical-align:middle; background:none;}
+input[type=checkbox]  {width:13px !important; height:13px !important; margin:0; padding:0; border:0; vertical-align:middle; background:none;}
+textarea {width:90%; padding:10px; border:1px solid #ddd}
+select {height:25px; line-height:20px; padding:0; margin:0; font-size:12px; color:#555555; font-family:"돋움", Dotum, "굴림", Gulim, "Lucida Grande", Tahoma, Verdana, AppleGothic, sans-serif; vertical-align:middle; border:1px solid #abadb3;}
+a:link,a:visited, a:active,a:hover {color:#2677d0;}
+ul,li,ol{list-style:none;}
+img {border:0; vertical-align:middle;}
+hr {display:none;}
+em, address {font-style:normal;}
+table {width:100%; border-collapse:collapse;}
+table th {white-space:nowrap;}
+caption  {visibility:hidden; margin:0; padding:0; width:0; height:0; overflow:hidden; font-size:0; line-height:0;}
+
+
+
+/* style */
+h1 {font-size:14px;}
+
+.wrap {width:90%; min-width:730px; padding:10px 30px}
+.wrap2 {width:100%; min-width:730px; padding:10px 30px}
+
+body { margin:0; font-family:Dotum, Verdana, sans-serif; font-size:12px; color:#666666; }
+table { margin:0; padding:0; border-spacing:0; border:0; border-collapse:collapse; }
+
+h3 { padding:0 0 15px 0; font-size:16px; color:#000; }
+h4 { margin:25px 0 5px 0; padding:0; font-size:12px; color:#333; }
+
+table.noline {padding:0; margin:0; border-collapse:collapse; border:0px;}
+table.noline tbody td {text-align:center;border:0px;}
+
+table {padding:0; margin:0; border-collapse:collapse; border:1px solid #e0e0e0;border-bottom-color:#a2a2a2;}
+table thead th {padding:8px 0 6px 0; margin:0; border:1px solid #d2d2d2; border-width:1px 1px 0 0; border-bottom:1px solid #e1e1e1; text-align:center; background:#eeeeee; color:#333}
+table tbody th {padding:8px 10px 5px 10px; margin:0; border-right:1px solid #e1e1e1; border-bottom:1px solid #e1e1e1; background:#eeeeee; text-align:left;}
+table tbody td { margin:0; padding:5px; border-right:1px solid #e1e1e1; border-bottom:1px solid #e1e1e1; text-align:left; }
+table.list tbody td {text-align:center}
+table.list tbody td.wBtn {padding-left:3px; padding-right:3px;}
+table tfoot td { margin:0; padding:5px; border-right:1px solid #e1e1e1; border-bottom:1px solid #e1e1e1; background:#eeeeee; color:#000; font-weight:bold}
+table.alR tbody td {text-align:right}
+table.alC tbody td {text-align:center}
+/*table tbody tr:hover {background:#f0f5f9}*/
+
+.paging {padding:0; margin:15px 0; list-style:none; text-align:center;}
+.paging li {display:inline; padding:2px}
+.paging li a {display:inline-block; height:25px; line-height:25px; text-align:center; vertical-align:middle;  text-decoration:none; color:#555555; }
+.paging li.on a {color:#276eb0; font-weight:bold; }
+.paging li a:hover {text-decoration:underline; color:#276eb0}
+
+.btn {display:inline-block; height:31px; min-width:40px; padding:0 0 0 10px; background:url("/QMS/img/btn03.gif") repeat-x; text-align:center; line-height:31px; font-weight:bold; text-decoration:none !important; color:#000000 !important; cursor:pointer; vertical-align:middle;}
+.btn span {display:inline-block; height:31px; min-width:40px; padding:0 10px 0 0; background:url("/QMS/img/btn03.gif") repeat-x right top; letter-spacing:-1px;line-height:31px}
+.btn span:hover {color:#276eb0;}
+
+.sBtn {display:inline-block; height:20px; padding:0 0 0 5px; background:url("/QMS/img/btn04.gif") repeat-x; text-align:center; font-size:11px; line-height:23px; font-weight:normal; text-decoration:none !important; color:#333333 !important; cursor:pointer !important; vertical-align:middle;}
+.sBtn span {display:inline-block; height:20px; padding:0 5px 0 0; white-space:nowrap; background:url("/QMS/img/btn04.gif") repeat-x right top;}
+.sBtn span:hover {color:#276eb0;}
+
+.blind {position:absolute; visibility:hidden; width:0; height:0; overflow:hidden; font-size:0;}
+.fc_org {color:#ff6400}
+.fc_mel {color:#3dcccc}
+.fc_red {color:red}
+.fc_blu {color:blue}
+.alL {text-align:left !important}
+.alC {text-align:center !important}
+.alR {text-align:right !important}
+
+.btnWrapL {text-align:left;  padding:0; margin:10px 0 20px;}
+.btnWrapC {text-align:center;  padding:0; margin:10px 0 20px;}
+.btnWrapR {text-align:right;  padding:0; margin:10px 0 20px;}
+.btnWrapH {overflow:hidden;  padding:0; margin:10px 0 20px;}
+.btnWrapD .fL {margin-right:3px;}
+.btnWrapD .fR {margin-left:3px;}
+.btnWrapE {position:absolute; overflow:hidden; bottom:0px; right:20px;  padding:0; margin:10px 0 20px; }
+
+.mgR10 {margin-left:10px;}
+.mgT10 {margin-top:10px;}
+
+
+table td.menu label {display:inline-block; width:100px;}
+label {line-height:180% !important;}
+
+

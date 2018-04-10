@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR" />
+	<title>working list</title>
+	<script src="../js/jquery-1.7.1.min.js"></script>
+	<script src="../js/guide.js"></script>
+		<link rel="stylesheet" href="../css/guide_wl.css" />
+	<script type="text/javascript"></script>
+	<style>
+		.red{
+			color:#ff0000;
+		}
+		.blue{
+			color:blue;
+		}
+		.strong{
+			font-weight:bold;
+		}
+	</style>
+</head>
+<body class="wList">
+<div class="wrap">
+
+	<h1 class="tit">Framework 조건별 분기 페이지 등록 관련 레이아웃</h1>
+	
+	<h3>아래 표는 일반적인 페이지에 해당하는 공통 사항이므로,<br/>
+	        특정 페이지의 분기처리를 달리 해야할 경우에는  해당 업무에 맞도록 등록합니다.
+	</h3>
+	<br/>
+	<div class="workList">
+		<!-- List Table -->
+		<div class="list" style="min-width:975px">
+			<table summary="작업목록 리스트" class="workTable">
+				<caption>작업 목록</caption>
+				<colgroup>
+					<col width="310px" />
+					<col width="91px" />
+					<col width="375px" />
+					<col width="*" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th scope="col">Layout 종류</th>
+						<th scope="col">분기코드</th>
+						<th scope="col">Layout Page</th>
+						<th scope="col">Content Page</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td class="dep2">AJAX</td>
+						<td class="dep3">SUCCESS</td>
+						<td class="dep4">NO_LAYOUT</td>
+						<td>AJAX</td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3">FAIL</td>
+						<td class="dep4">NO_LAYOUT</td>
+						<td>AJAX</td>
+					</tr>
+					
+					<tr>
+						<td class="dep2">top-left-body-bottom 구조의  레이아웃 페이지</td>
+						<td class="dep3">SUCCESS</td>
+						<td class="dep4">/BOL/jsp/common/layout_config/tiles_4_area_layout.jsp</td>
+						<td>해당 jsp 경로를 포함한 파일명</td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3">FAIL</td>
+						<td class="dep4">/BOL/jsp/common/layout_config/tiles_4_area_layout.jsp</td>
+						<td><span class="red">/BOL/jsp/error_info.jsp</span></td>
+					</tr>
+					<tr>
+						<td class="dep2">top-body-bottom 구조의  레이아웃 페이지</td>
+						<td class="dep3">SUCCESS</td>
+						<td class="dep4">/BOL/jsp/common/layout_config/tiles_3_area_layout.jsp</td>
+						<td>해당 jsp 경로를 포함한 파일명</td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3">FAIL</td>
+						<td class="dep4">/BOL/jsp/common/layout_config/tiles_3_area_layout.jsp</td>
+						<td><span class="red">/BOL/jsp/error_info.jsp</span></td>
+					</tr>
+					<tr>
+						<td class="dep2">팝업  레이아웃 페이지</td>
+						<td class="dep3">SUCCESS</td>
+						<td class="dep4">/BOL/jsp/common/layout_config/tiles_popup_area_layout.jsp</td>
+						<td>해당 jsp 경로를 포함한 파일명</td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3">FAIL</td>
+						<td class="dep4">/BOL/jsp/common/layout_config/tiles_popup_area_layout.jsp</td>
+						<td><span class="red">/BOL/jsp/error_info.jsp</span></td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3"></td>
+						<td class="dep4"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3"></td>
+						<td class="dep4"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3"></td>
+						<td class="dep4"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3"></td>
+						<td class="dep4"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3"></td>
+						<td class="dep4"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3"></td>
+						<td class="dep4"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3"></td>
+						<td class="dep4"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3"></td>
+						<td class="dep4"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3"></td>
+						<td class="dep4"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td class="dep2"></td>
+						<td class="dep3"></td>
+						<td class="dep4"></td>
+						<td></td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div><!-- List Table -->
+	</div><!-- //workList -->
+</div>
+<!-- //wrap -->
+</body>
+</html>

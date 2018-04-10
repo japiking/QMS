@@ -1,0 +1,57 @@
+
+<%@ include file="/jsp/inc/inc_common.jsp" %>
+
+<script type="text/javascript">
+	function uf_goPage(url) {
+		document.location.href = url;
+	}
+</script>
+
+</head>
+<body class="guideLnb">
+
+	<div class="lnb">
+		<h1>
+			<img src="img/webcashfit_logo.png" alt="KEB QMS" width = "200" height = "40"/>
+		</h1>
+
+		<h2>게시판</h2>
+		<ul>
+			<li><a href="cont/notice.html" target="webGuide">공지사항  (Q90101)</a></li>
+			<li><a href="cont/link.html" target="webGuide">공유 게시물  (Q90101)</a></li>
+		</ul>
+		
+		<h2>개발관리</h2>
+		<ul>
+			<li><a href="cont/rule1.html" target="webGuide" onclick="javascript:uf_goPage('/QMS/jsp/view/Q00101.jsp');">실적등록       (Q10101)</a></li>
+			<li><a href="cont/rule2.html" target="webGuide">업무기준통계 (Q20101)</a></li>
+			<li><a href="cont/rule2.html" target="webGuide">담당기준통계 (Q20201)</a></li>
+			<li><a href="cont/rule2.html" target="webGuide">일별실적내역 (Q20301)</a></li>
+			<li><a href="cont/rule2.html" target="webGuide">예상공정율    (Q20401)</a></li>
+		</ul>
+		
+		<h2>테스트관리</h2>
+		<ul>
+			<li><a href="cont/commonUtil.html" target="webGuide">테스트등록</a></li>
+			<li><a href="cont/formatUtil.html" target="webGuide">테스트통계</a></li>
+		</ul>
+		
+		<h2>원장관리</h2>
+		<ul>
+			<li><a href="cont/commonUtil.html" target="webGuide">PT         (Q50101)</a></li>
+			<li><a href="cont/formatUtil.html" target="webGuide">코드                (Q50201)</a></li>
+			<li><a href="cont/formatUtil.html" target="webGuide">일별실적집계   (Q50301)</a></li>
+		</ul>
+
+		<!-- <div class="noti">
+			<span class="fcP">[중요]</span> 전달사항이 있을 경우 알립니다. 
+		</div> -->
+		
+		
+			<img src="img/qms_logo.PNG" alt="KEB QMS" width = "100" height = "35"/>
+		
+	</div>
+
+
+</body>
+</html>

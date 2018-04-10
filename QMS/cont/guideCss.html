@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>working list</title>
+	<script src="../js/jquery-1.7.1.min.js"></script>
+	<script src="../js/guide.js"></script>
+	<link rel="stylesheet" href="../css/guide.css" />
+</head>
+<body>
+<div class="wrap">
+
+
+	<h1 class="guideTit">3. CSS</h1>
+	
+	<h2>3.1. CSS 작성규칙</h2>
+	
+	<ul class="list01">
+		<li>CSS는 2.0을 기준으로 인코딩은 HTML과 동일하게 작업한다.</li>
+		<li>CSS의 가독성을 위해 의미없는 줄바꿈을 하지 않는다.</li>
+		<li>빈 줄은 두 줄 이상 띄우지 않는다.</li>
+		<li>0을 제외한 모든 수치에는 단위(px, %)를 붙인다.</li>
+		<li>색상값은 RGB값 6자리(예:#000000)로 지정한다. 키워드(예:black) 값은 사용하지 않는다.</li>
+		<li>주석기호 사이 앞뒤로 한 칸씩 공백 이외 불필요한 공백을 넣지 않는다. 예) /* 주석 */</li>
+		<li>속성값은 큰 따옴표(“”)로 묶는다.</li>
+		<li>CSS 속성 선언순서는 다음과 같은 순서로 사용한다.{display/ overflow/ float/ position/ width/ height/ padding/ margin/ border/ 글꼴; 배경; …} <br />
+		position과 연관된 속성의 순서는 top, right, bottom, left(시계방향), z-index 순으로 한다.</li>
+		<li>한글 폰트 속성값은 “돋움”, dotum과 같이 한글과 영문을 모두 표기한다.</li>
+	</ul>
+
+
+
+	<h2>3.2. CSS 파일구조</h2>
+	 
+	<ul class="list01">
+		<li>bBase.css : CSS의 Base setting</li>
+		<li>bLayout.css : 페이지의 레이아웃 관련 css (기업온라인에서는 header, footer 영역의 내용을 bHeadFoot.css 에 따로 분리해 둠)</li>
+		<li>bHeadFoot.css : 개인뱅킹,기업뱅킹, 외환포탈 등에서 공통으로 사용하는 header, footer 스타일의 내용을 가지는 css</li>
+		<li>bCommon.css : 각종 템플릿 및 공통으로 사용가능한 css</li>
+		<li>bTable.css : 페이지의 모든 table 관련 css</li>
+		<li>bContents.css : bBase.css / bCommon.css / bLayout.css /bHeadFoot.css/ bTable.css 를  import하는 sub 관련 css</li>
+		<li>bMain.css : bBase.css / bCommon.css / bLayout.css / bHeadFoot.css 를 import하고 있는 main 관련 css</li>
+		<li>bPopup.css : bBase.css / bCommon.css / bTable.css 를 import하고 있는 popup 관련 css</li>
+	</ul>
+	
+
+	<h2>3.3. CSS 사용</h2>
+
+<h3>3.3.1. bContents.css - 서브화면</h3>
+<div class="xmp"><xmp>
+@import url('bBase.css');
+@import url('bCommon.css');
+@import url('bLayout.css');
+@import url('bHeadFoot.css');
+@import url('bTable.css');
+서브 컨텐츠 화면 스타일
+</xmp></div>
+
+<h3>3.3.2. bMain.css - 메인화면</h3>
+<div class="xmp"><xmp>
+@import url('bBase.css');
+@import url('bCommon.css');
+@import url('bLayout.css');
+@import url('bHeadFoot.css');
+메인 화면 스타일
+</xmp></div>
+
+<h3>3.3.3. bPopup.css - 팝업화면</h3>
+<div class="xmp"><xmp>
+@import url('bBase.css');
+@import url('bCommon.css');
+@import url('bTable.css');
+팝업 컨텐츠 스타일
+</xmp></div>
+
+
+
+<!--
+
+	<h2>3.4. CSS 작성시 주의 사항</h2>
+
+<p>
+@charset "euc-kr"; 문서 인코딩 선언 앞에 아무것도 기술하지 않는다.(공백 포함) <br />
+css를 파싱 할 때 인코딩 선언 앞에 문자나 공백이 있으면 css가 적용되지 않는 경우가 있다.
+</p>
+
+<xmp>
+css에 주석을 작성 할 때 주석문 앞뒤로 꼭 공백을 삽입   
+/* 본문스타일 */   (O)
+/*---------- 본문스타일 ----------*/     (X)
+/*본문스타일*/   (X)
+</xmp>
+
+<h2>3.5. CSS 적용방법</h2>
+
+<xmp>
+.alnL {text-align:left;}.mgT10 {margin-top:10px;}
+<div class="alnL">내용</div>
+위의 클래스를 둘다 적용하려면<div class="alnL mgT10">내용</div> 와 같이 선언하면 된다.
+(주의사항 : 속성과 속성 사이는 반드시 띄어쓰기 해야 함)
+</xmp>
+
+ 
+-->
+ 
+
+
+
+
+
+
+
+
+</div><!-- //wrap -->
+</body>
+</html>

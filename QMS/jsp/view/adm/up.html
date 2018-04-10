@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<html>
+<head>
+</head>
+<script src="/QMS/js/common/lib/jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function(){
+	
+	var count =0;
+	$("#add").bind("click",function(){
+		
+		var inhtml	 = "";
+		var fileName = "";
+		inhtml	=	"<input type='file' name='file"+count+"'id='file"+count+"' />";
+		
+		$("#fileList").append(inhtml);
+		$("#fileList > input").css("display","none");
+		
+		var fnm = "#file"+count; 
+		$(fnm).change(function(){
+			  alert($(fnm).val());
+			  inhtml	="<span id='txt"+count+"'>"+$(fnm).val()+"<sapn><a href='#' id='remove"+count+"'>삭제</a><br>";
+			  $("#fileList").append(inhtml);
+		});
+
+		$("#file"+count).click();
+		count++;
+	});
+	
+
+	
+	$("#fileList > a").each(function (index){
+		alert(index);
+	});
+	
+	
+});
+</script>
+</head>
+<body>
+	<form action="up.jsp" enctype="multipart/form-data" method="post">
+		<div id="fileList"></div>		 
+		<a href="#" id="add">추가</a>
+		<a href="#" id="send">전송</a>
+	</form>
+</body>
+</html>

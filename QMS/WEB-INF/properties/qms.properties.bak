@@ -1,0 +1,69 @@
+#===============================================================================================================
+#=======================================   LOG Setting Info  ===================================================
+#===============================================================================================================
+#=========================
+# Variable  
+#=========================
+LOG_NAME=qmslog
+LOG_HOME=C:/log/qms
+
+#=========================
+# Log4j Setting file
+# FATAL > ERROR > WARN > INFO > DEBUG > TRACE
+#=========================
+#log4j.rootLogger=DEBUG, logfile
+log4j.rootLogger=TRACE, logfile
+#log4j.rootLogger=OFF, logfile
+
+#=========================
+# Daily file log
+#=========================
+log4j.appender.logfile=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.logfile.File=${LOG_HOME}/${LOG_NAME}.log
+#log4j.appender.logfile.File=/usr/share/tomcat6/logs/catalina.out
+log4j.appender.logfile.Append=true
+# log4j.appender.logfile.MaxFileSize=500KB
+# log4j.appender.logfile.MaxBackupIndex=10 
+log4j.appender.logfile.DatePattern='.'yyyy-MM-dd
+log4j.appender.logfile.layout=org.apache.log4j.PatternLayout
+log4j.appender.logfile.layout.ConversionPattern=[%d{yyyy-MM-dd HH:mm:ss:SSS}][%-5p] : %m%n
+
+#=========================
+# Console log
+#=========================
+log4j.appender.console=org.apache.log4j.ConsoleAppender
+log4j.appender.console.layout=org.apache.log4j.PatternLayout
+log4j.appender.console.layout.ConversionPattern=[%d{yyyy-MM-dd HH:mm:ss}][%-5p](%F:%L) - %m%n
+
+log4j.logger.com.ibatis=INFO 
+log4j.logger.com.ibatis.common.jdbc.SimpleDataSource=INFO 
+log4j.logger.com.ibatis.common.jdbc.ScriptRunner=INFO 
+log4j.logger.com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate=INFO 
+log4j.logger.com.ibatis.common.logging.jakarta.JakartaCommonsLoggingImpl=INFO
+
+log4j.logger.java.sql.Connection=INFO 
+log4j.logger.java.sql.Statement=INFO 
+log4j.logger.java.sql.PreparedStatement=INFO 
+log4j.logger.java.sql.ResultSet=INFO 
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender 
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout 
+log4j.appender.stdout.layout.ConversionPattern=%5p [%t] - %m%n
+
+
+#===============================================================================================================
+#=======================================   QMS Setting Info  ===================================================
+#===============================================================================================================
+#========================
+# DocumentPath
+#=======================
+rootPath=C:/workspace/QMS/
+
+#========================
+# FilePath
+#=======================
+FilePath=C:/workspace/QMS/uploadfile
+
+#========================
+# User_Login List
+#=======================
+USER_LIST=japicel|bgh|kok1530|jihun

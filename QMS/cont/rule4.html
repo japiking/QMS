@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR" />
+	<title>working list</title>
+	<script src="../js/jquery-1.7.1.min.js"></script>
+	<script src="../js/guide.js"></script>
+	<link rel="stylesheet" href="../css/guide.css" />
+	<script type="text/javascript"></script>
+	<style>
+		.red{
+			color:#ff0000;
+		}
+		.blue{
+			color:blue;
+		}
+		.strong{
+			font-weight:bold;
+		}
+	</style>
+</head>
+<body>
+<div class="wrap">
+
+	<h1 class="guideTit">다국어 처리 관련</h1>
+	
+	<h2>1. 프레임웍 메뉴</h2>
+	<ul class="list01">
+		<li>클라이언트 메뉴 관리 > 개발공통 > 코드관리 > 코드그룹관리</li>
+		<li>클라이언트 메뉴 관리 > 개발공통 > 코드관리 > 다국어관리</li>
+	</ul>
+	
+	<h2>2. JSP 소스 텍스트 처리</h2>
+	<ul class="list01">
+		<li>일반적인 html 코드 상의 텍스트 처리는<br/>
+		    <span class="blue">I18NUtil.getLabel</span> 메소드를 사용해서 아래처럼 서블릿 코드로 처리합니다.
+<xmp class="xmp">    <div class="title02">
+        <h4><%=I18NUtil.getLabel(localeCode, "코드", "기본값")%></h4>
+    </div>
+</xmp>
+		</li>
+	</ul>
+	
+	
+	<h2>3. HTML 코드상의 이미지 처리</h2>
+	<ul class="list01">
+		<li>JSP 서블릿 코드에서 아래와 같이 선언 후<br/>
+			&lt;%<br/>
+			&nbsp;&nbsp;&nbsp;&nbsp;String localeCode = SessionManager.getLocaleCode(request);<br/>
+			&nbsp;&nbsp;&nbsp;&nbsp;String imageLocalePath = WebUtils.getImageLocalePath(localeCode);<br/>
+			%&gt;
+			<br/>
+		</li>
+		<li>html 코드에서 아래처럼 처리합니다.<br/>
+&lt;img src="/BOL/img/<span class="blue strong">&lt;%=imageLocalePath%&gt;</span>/common/head/dTit02.gif" alt="기업뱅킹" /&gt;
+</li>		
+	</ul>
+	
+	
+	<h2>4. javascript 소스 텍스트 처리</h2>
+	<ul class="list01">
+		<li>javascript 에서 사용할 다국어를 해당 JSP의 상단에서 선언후 javascript에서 꺼내 사용합니다.<br/>
+<xmp class="xmp"><%
+	String localeCode = SessionManager.getLocaleCode(request);
+	String currentDate = WebUtils.getToday();
+
+	//javascript 에서 사용 될 다국어처리용 라벨을 여기에서 선언한다.
+	HashMap<String, String> label = new JSONObject();
+	label.put("거래일시"     ,I18NUtil.getLabel(localeCode, "거래일시", "거래일시"));
+	label.put("거래구분"     ,I18NUtil.getLabel(localeCode, "거래구분", "거래구분"));
+	label.put("적요A"       ,I18NUtil.getLabel(localeCode, "적요A", "적요"));
+	label.put("찾으신금액A"  ,I18NUtil.getLabel(localeCode, "찾으신금액A", "찾으신금액"));
+	label.put("맡기신금액A"  ,I18NUtil.getLabel(localeCode, "맡기신금액A", "맡기신금액"));
+	label.put("남은금액"     ,I18NUtil.getLabel(localeCode, "남은금액", "남은금액"));
+	label.put("취급점"       ,I18NUtil.getLabel(localeCode, "취급점", "취급점"));
+	label.put("원1"         ,I18NUtil.getLabel(localeCode, "원", "원"));
+	label.put("일"          ,I18NUtil.getLabel(localeCode, "일", "일"));
+	label.put("AIA00018"    ,I18NUtil.getLabel(localeCode, "AIA00018", "조회시작일을 입력하십시오!"));
+	label.put("AIA00019"    ,I18NUtil.getLabel(localeCode, "AIA00019", "조회종료일을 입력하십시오!"));
+	label.put("AIA00020"    ,I18NUtil.getLabel(localeCode, "AIA00020", "날자 입력이 잘못되었습니다!"));
+	label.put("AIA00022"    ,I18NUtil.getLabel(localeCode, "AIA00022", "조회기간이 잘못입력 되었습니다!"));
+	label.put("BAI1001P17"  ,I18NUtil.getLabel(localeCode, "BAI1001P17", "계좌번호를 선택해주세요."));
+	
+	//계좌상세조회구분 코드리스트
+	JSONObject AI00015 = MapUtil.makeDataSetToJson(new JSONObject(), I18NUtil.getCodeLabel("AI00015", localeCode), "list");
+%>
+<script type="text/javascript">
+	var LABEL = <%=label.toString()%>;
+	var AI00015 = <%=AI00015.toString()%>;
+</script>
+</xmp>
+		</li>
+	</ul>
+	
+</div>
+<!-- //wrap -->
+</body>
+</html>

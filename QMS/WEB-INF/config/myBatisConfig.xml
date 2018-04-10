@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+	<!-- db 정보 파일을 로드한다. -->
+	<settings>
+		<!--<setting name="callSettersOnNulls" value="true" />-->
+		<setting name="jdbcTypeForNull" 			value="VARCHAR" />
+		<setting name="mapUnderscoreToCamelCase" 	value="false"/>
+	</settings>
+
+	<!-- db 연결 -->
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC"/>
+				<dataSource type="JNDI">
+					<property name="data_source" value="java:comp/env/jdbc/QMS"/>
+				</dataSource> 
+			 <!--	
+				<dataSource type="POOLED">
+					<property name="driver" value="org.apache.derby.jdbc.ClientDriver"/>
+					<property name="url" value="jdbc:derby://172.20.30.126:1527/qmsDB"/>
+					<property name="username" value="qms"/>
+					<property name="password" value="qms"/>
+				</dataSource>
+			 -->
+			<!--  
+			<dataSource type="POOLED">
+				<property name="driver" value="com.ibm.db2.jcc.DB2Driver"/>
+				<property name="url" value="jdbc:db2://172.20.30.126:50000/qmsDB"/>
+				<property name="username" value="db2inst1"/>
+				<property name="password" value="qwer1234!"/>
+			</dataSource>
+			 -->
+		</environment>
+	</environments> 
+	
+	<!-- 
+	* sql mapper
+	* /WEB-INF/classes/sqlMapper/안에 있는 xml을 추가해줘야 한다.
+	-->
+	<mappers>
+<!-- 		<package name="sqlMaper"/> -->
+		<mapper resource="sqlMapper/TEST_QUERY.xml"/>
+		<mapper resource="sqlMapper/QMS_SUPERUSER.xml"/>
+		<mapper resource="sqlMapper/QMS_ADMIN.xml"/>
+		<mapper resource="sqlMapper/QMS_SEQ_INFO.xml"/>
+		<mapper resource="sqlMapper/QMS_LOGIN.xml"/>
+		<mapper resource="sqlMapper/QMS_BBS_DETAIL.xml"/>
+		<mapper resource="sqlMapper/QMS_BBS_LIST.xml"/>
+		<mapper resource="sqlMapper/QMS_BBS_INDEX.xml"/>
+		<mapper resource="sqlMapper/QMS_BBS_ONELOW.xml"/>
+		<mapper resource="sqlMapper/QMS_BBS_WRITE.xml"/>
+		<mapper resource="sqlMapper/QMS_BBS_MEALTICKET.xml"/>
+		<mapper resource="sqlMapper/QMS_BBS_ISSU.xml"/>
+		<mapper resource="sqlMapper/QMS_BBS_NOTICE.xml"/>
+		<mapper resource="sqlMapper/QMS_EXCEL_PROC.xml"/>
+		<mapper resource="sqlMapper/QMS_QUALITYCONTROL.xml"/>
+		<mapper resource="sqlMapper/QMS_DEFECT.xml"/>
+		<mapper resource="sqlMapper/QMS_CODELIST.xml"/>
+		<mapper resource="sqlMapper/QMS_QC_MANAGEMENT_LIST.xml"/>
+		
+	</mappers>
+	
+</configuration>

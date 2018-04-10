@@ -1,0 +1,53 @@
+@charset "euc-kr";
+html,body{width:100%;height:100%;}
+body {overflow-x:hidden;padding:0;margin:0;color:#6e6e6e;font-family:"µ¸¿ò",dotum,Helvetica,AppleGothic,sans-serif;font-size:12px;line-height:1.4}
+div, p, ol, ul, li, img, a, h1, h2, h3, h4, h5, h6, form, span, iframe, dl, dt, dd {margin:0px;padding:0px;font-family:"µ¸¿ò",dotum,Helvetica,AppleGothic,sans-serif;}
+ul, ol, dl {list-style:none;}
+
+*{word-break:keep-all;white-space:-moz-pre-wrap; white-space:-pre-wrap; white-space:-o-pre-wrap; word-wrap:break-word;}
+
+table, th, td {margin:0;padding:0;font-size:12px;font-family:"µ¸¿ò",dotum,Helvetica,AppleGothic,sans-serif;border-collapse:collapse;color:#666;}
+caption {width:0;height:0;font-size:0;line-height:0;padding:0;margin:0; visibility:hidden;}
+textarea {color:#666;font-size:12px;font-family:"µ¸¿ò",dotum,Helvetica,AppleGothic,sans-serif;}
+select {color:#666;font-family:"µ¸¿ò",dotum,Helvetica,AppleGothic,sans-serif;}
+input {color:#666;background:transparent;font-family:"µ¸¿ò",dotum,Helvetica,AppleGothic,sans-serif;font-size:12px;border:1px solid #a4a4a4;background:#fff;}
+fieldset {margin:0px;padding:0px;border:none;}
+legend {position:absolute;width:0;height:0;font-size:0;overflow:hidden;}
+em, address{font-style:normal;}
+
+a{color:#666;text-decoration:none;}
+a:hover,a:focus{text-decoration:none}
+img {border:0px;font-size:0px;}
+hr {display:none;}
+col {background:none;}
+
+.cboth {clear:both; display:inline-block; width:100%;}
+input.bnone {border:0;}
+label {cursor:pointer;}
+
+/* ¼û±èÃ³¸® */
+.blind{position:absolute;left:0;top:0;visibility:hidden;overflow:hidden;height:0;width:0;margin:0;padding:0;line-height:0;font-size:0;}
+
+
+
+
+/****************************************
+layout 
+****************************************/
+#wrapper{overflow:hidden;width:100%;padding:55px 0 65px 0;}
+#header{overflow:hidden;width:980px;margin:0 auto;}
+#footer{overflow:hidden;width:980px;margin:0 auto;}
+#footer h1{float:left;}
+#footer p{float:left;padding:14px 0 0 30px;}
+
+/****************************************
+login 
+****************************************/
+#wrapper.login{background:url('/QMS/img/bg_login.jpg') no-repeat center 0;}
+.loginArea{overflow:hidden;margin:425px auto 70px auto;width:980px;height:151px;background: url('/QMS/img/bg_loginBx.png') no-repeat 0 0;}
+.loginBx{overflow:hidden;position:relative;margin:37px auto 0 auto;width:375px;height:62px;}
+.loginBx p:first-child{margin-bottom:10px;}
+.loginBx p{height:24px;}
+.loginBx label{float:left;display:inline-block;width:76px;padding-top:7px;vertical-align:middle;}
+.loginBx input{width:179px;height:24px;padding:0 2px;line-height:26px;}
+.loginBx a{display:inline-block;position:absolute;right:0;top:0;}

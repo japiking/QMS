@@ -1,0 +1,108 @@
+############### QMS 설정정보 ###############
+
+#======================================================
+## web.xml 수정 ##
+#======================================================
+1) 인코딩 추가
+<Connector port="8080" protocol="HTTP/1.1"
+              cXXXXXXonnectionTimeout="20000"
+               redirectPort="8443"
+               URIEncoding="UTF-8"/>
+2) 아래 설정 추가
+<!-- WAS기동시 수행할 작업 -->
+<servlet>
+          <servlet-name>QmsProcessInit</servlet-name>
+          <servlet-class>qms.QmsProcessInit</servlet-class>
+          <load-on-startup>1</load-on-startup>
+</servlet>
+<!-- Log4j Setting -->
+<context-param>
+    <param-name>log4j-config-location</param-name>
+    <param-value>WEB-INF/properties/qms.properties</param-value>
+</context-param>
+
+#======================================================
+## server.xml 수정 ##
+#======================================================
+# 맨 밑에 라인 로그 경로 수정
+directory="/logs/qms"
+
+#======================================================
+## 프로퍼티 설정정보 수정 ##
+#======================================================
+#파일위치 /WEB-INF/properties/qms.properties
+1) 로그레벨 수정(DEBUG, INFO, FATAL)
+log4j.rootLogger=DEBUG, logfile
+
+2)PATH정보 수정
+#-----------------------
+# DocumentPath
+#-----------------------
+rootPath=/home/qms/WebContent/
+
+#-----------------------
+# FilePath
+#-----------------------
+FilePath=/home/qms/WebContent/uploadfile
+
+3) 근태 배치 아이디 정보 수정
+#-----------------------
+# User_Login List
+#-----------------------
+USER_LIST=japicel|bgh|kok1530|jihun|jinam
+
+#======================================================
+## Tomcat 설정정보 수정 ##
+#======================================================
+1) 클래스패스 설정 정보
+bin/catalina.bat 파일을 수정
+#클래스패스에 맞게 아래 경로 수정
+set CLASSPATH=/home/qms/WebContent/WEB-INF/classes;/home/qms/WebContent/WEB-INF/lib/*.jar
+
+2) 로그위치 수정
+#tomcat의 bin/catalina.sh 파일
+CATALINA_OUT=/logs/qms/qmslog.log 
+
+#conf/logging.properties 파일
+1catalina.org.apache.juli.FileHandler.level = FINE
+1catalina.org.apache.juli.FileHandler.directory = /logs/qms
+1catalina.org.apache.juli.FileHandler.prefix = catalina.
+
+2localhost.org.apache.juli.FileHandler.level = FINE
+2localhost.org.apache.juli.FileHandler.directory = /logs/qms
+2localhost.org.apache.juli.FileHandler.prefix = localhost.
+
+3manager.org.apache.juli.FileHandler.level = FINE
+3manager.org.apache.juli.FileHandler.directory = /logs/qms
+3manager.org.apache.juli.FileHandler.prefix = manager.
+
+4host-manager.org.apache.juli.FileHandler.level = FINE
+4host-manager.org.apache.juli.FileHandler.directory = /logs/qms
+4host-manager.org.apache.juli.FileHandler.prefix = host-manager.
+위와같이 로그 경로를 바꿔주셔야 합니다.
+
+3) server.xml 수정
+<Host name="localhost"  appBase="webapps" unpackWARs="true" autoDeploy="true">
+        <Context reloadable="true" path="/QMS" docBase="/home/qms/WebContent">
+                <Resource type="javax.sql.DataSource" auth="Container" name="jdbc/QMS" maxWait="-1" maxIdle="10" maxActive="20" password="qms" username="qms" url="jdbc:derby://172.20.30.126:1527/qmsDB;user=qms;password=qms" driverClassName="org.apache.derby.jdbc.ClientDriver"/>
+        </Context>
+        ...
+</Host>
+
+
+#########################
+# P.S 그 밖의 참고 자료 #
+#########################
+## DB기동 ## 
+1) Windows
+ NetworkServerControl.bat start -p 1527 -h localhost
+2) 리눅스, 유닉스
+ sh NetworkServerControl.sh start -p 1527 -h localhost
+ 
+## 접속 및 DB 생성 ## 
+ij.bat(ij.sh) 실행 후
+CONNECT 'jdbc:derby://localhost:1527/qmsDB;create=true' user 'qms' password 'qms';
+
+접속 확인
+show connections;
+show tables;

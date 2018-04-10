@@ -1,0 +1,56 @@
+@charset "utf-8";
+
+/* HTML Guide */
+body#guide {background:#fff}
+
+.list-guide {list-style:none}
+
+.tab-wrap { width: 100%; position: relative; margin-left: 1px; }
+.tab-tit { width: auto; float: left; position: relative; margin-left: -1px; border:1px solid #ddd}
+.tab-tit:after { content: ""; display: block; clear: both }
+.tab-tit a { position: relative; float: left; font-size:12px; text-decoration:none }
+.tab-tit a:hover, .tab-tit a:active, .tab-tit a:focus { text-decoration:underline; }
+.tab-tit a span { font-weight: normal; }
+.tab-tit { float: left; background: blue; padding: 0; }
+.tab-tit a.act { display: block; background:#eee; padding: 5px 15px 4px; color:#666; text-decoration:none}
+.tab-tit a.act:hover {text-decoration:underline}
+.tab-tit.active {border:1px solid #5b91c4}
+.active { background:#333; margin-right: -1px; z-index: 10; }
+.active a.act { padding-bottom: 4px; background:#6e95be; color: #fff; }
+.active a.act span { font-weight: bold; }
+.tab-conts { position: absolute; top: 50px; left: 0; width: 100%; border-bottom: 0; }
+
+.guide_table table{width:100%;overflow:hidden}
+.guide_table table th,.guide_table table td{border:1px solid #ddd;padding:6px;font-weight:normal;text-align:left}
+.guide_table table h4{font-size:14px;color:#797979}
+.guide_table table pre{margin:0;padding:5px}
+.guide_table table .bg{background-color:#f4f4f4;border-top:1px solid #3471b3}
+.guide_table table pre{border-color:#ddd;background-color:#f1f1f1}
+.guide_table .list-guide li,.guide_table .list-guide li strong,.guide_table .list-guide li p{padding-left:7px;font-size:11px;color:#000}
+.guide_table .list-guide li.comment{margin:15px 0 0}
+.guide_table .list-guide li p{padding:5px 0 0;color:#666}
+.guide_table li strong.noti{font-size:11px;color:#ff6a33;font-weight:normal}
+.guide_table .list-guide em{padding-left:10px;font-style:normal;font-size:11px;color:#999}
+.guide_table .show_update,.guide_table .hide_update{display:block;margin:0 0 10px;padding:2px 5px 2px;border:1px dashed #999;font-size:11px}
+.guide_table a.show_update:hover,.guide_table a.hide_update:hover{background-color:#ddd;text-decoration:none}
+.guide_table .hide_update{border:0 none}
+.guide_table #update{display:none;margin:0 0 10px;border:1px dashed #999}
+.guide_table #update ul{padding:0 5px}
+.yeong{margin:20px 0 0;background-color:#f1f1f1;border:1px dashed #ccc;padding:10px}
+.hover{background:red}
+
+.sourceCode {margin:20px;}
+/*div.pre{clear:both;margin:0;padding:10px;border:1px dashed #000;background-color:#dedede;font-size:12px}
+pre{clear:both;margin:10px 0 0;padding:10px;border:1px dashed #000;background-color:#dedede; font-size:12px; color:#666; line-height:18px;}*/
+.box { border: 1px dashed #fff; padding: 1em; font-family: 'Courier New', Courier, monospace; background: #333; color: #fff; border-radius: 5px }
+.box pre { color: #fff }
+
+
+.wrap {padding-left:30px;}
+h1.guideTit {margin-left:30px}
+.sec {width:710px; margin:20px 0 20px; padding:10px; border:1px dashed #ddd; background:#fff; color:#666;}
+.sec .memo {margin:5px 0 0 5px;}
+.sec p {margin:3px 0; padding:0;}
+.sourceCode {margin:20px 0 0 0 ; width:95%}
+.guideTit2 {margin:25px 0 10px 0}
+.fc_org {color:#f65508}

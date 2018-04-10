@@ -1,0 +1,92 @@
+@charset "utf-8";
+
+*{margin:0;padding:0;line-height:160%;font-size:12px;}
+
+h1, h2, h3, h4, h5, h6,  div, p, blockquote, pre, address,  ul, ol, li, dl, dt, dd,  table, caption, th, td,  form, fieldset, legend, thead, tbody,  hr { margin:0; padding:0; font-family:돋움, Dotum, 굴림, Gulim, AppleGothic, Sans-serif;}
+
+
+
+/* lnb */
+div.guideLnb {background:#fff;}
+.lnb {width:150px; background:#fff; }
+.lnb h1 {padding:10px 0; text-align:center; font-size:14px; color:#333}
+.lnb h2 {padding:10px; border-top:1px solid #c6c7cd; background:#276eb0; color:#fff; }
+
+.lnb ul {border-top:1px solid #c6c7cd}
+.lnb ul li {padding:0 0 0 25px; border-bottom: 1px dashed #c6c7cd; background:url('../img/bul_blue.gif') no-repeat 10px 50%;}
+.lnb ul li a {display:block; padding:4px 0; color:#666 ; text-decoration:none; }
+.lnb ul li a:hover {color:#00aeef;}
+.lnb ul li a.noneLink {color:#999; cursor:default;}
+
+.lnb .noti {margin:10px 5px; padding:6px; border:1px solid #d2d2d2; background:#ebf4ff; /*color:#2a6ad4*/color:#555}
+.lnb .noti .fcP {color:#e92175; font-weight:bold;}
+
+
+.tab {overflow:hidden; margin:10px 0 20px; width:150px; border-bottom:1px solid #acacac}
+.tab ul {list-style:none;}
+.tab li {float:left; padding:10px; border:1px solid #bbb; border-width:1px 1px 0 0; color:#666; font-weight:bold; background:#fff;}
+.tab li.first {border-left-width:1px;}
+.tab li.on {background:#e92175; border-color: #bb0753; color:#fff;}
+
+
+
+
+/* menu Style */
+div.guideMenu {background:#fff;}
+ul, li , ol  {list-style:none !important;}
+
+.tree ul { display: none; }
+.tree .tree_expanded { display: block; }
+.tree_name { border: 1px solid #ddd; color: #ad8544; font-size: 16px; font-weight:bold; overflow: hidden; padding: 5px 0; text-align: center;width:240px; }
+.tree a { text-decoration: none; }
+.tree a:hover { text-decoration: none; }
+.tree  { clear: both; margin: 0 0 20px; padding: 5px 0 0; }
+.tree,
+.tree ul { background: url(../img/grey_line.gif) repeat-y; }
+.tree ul { margin: -4px 0 0 4px; padding: 5px 0 0; }
+.tree li  { background: url(tree_li.gif) no-repeat 0 11px; clear: both; list-style: none; padding: 5px 0 2px 10px; line-height: 18px;font-size:12px}
+.tree li.last,
+.tree li:last-child { background: #fff url(../img/tree_li_last.gif) no-repeat 0 -481px; }
+.tree .tree_trigger,
+.tree .tree_slug { background: url(../img/tree_icons2.gif) no-repeat; display: inline; float: left; margin: 0 5px 0 0; padding-left:15px; overflow: hidden; text-decoration: none; height: 17px; }
+.tree .tree_trigger_expanded { background-position: 0 -17px; }
+.tree .tree_slug { background-position: 0 -34px; }
+.ft1 {color:#f26522; font-weight:bold;}
+
+
+/* Working Board */
+div.wList { margin:0; padding:10px 20px 30px 20px; background:url('../img/bg_wList.gif') #e1e1e1; font-family:Dotum, Verdana, sans-serif; font-size:12px; color:#666666; }
+.wList .wrap {width:100%; padding:0; margin:0;}
+table { margin:0; padding:0; border-spacing:0; border:0; border-collapse:collapse; }
+caption { visibility:hidden; height:0; font-size:0 }
+h1.tit { padding:0 0 15px 0; font-size:16px; color:#333; }
+p.depth1 {position:absolute; top:19px; right:10px; padding:10px; /*border-bottom:1px solid #d9d9d9;*/ color:#53bdb7; font-weight:bold;}
+
+.workList table.workTable { width:100%; border:1px solid #c6c7cd; border-collapse:collapse; }
+.workList table.workTable th { border-right:1px solid #c6c7cd; border-bottom:1px solid #ccc; padding:5px 0; background:#666; color:#ddd;}
+.workList table.workTable td { border-right:1px solid #c6c7cd; border-bottom:1px solid #ccc; padding:2px 5px;  }
+.workList table.workTable td.dep2 {font-weight:bold}
+.workList table.workTable td.dep3 { }
+.workList table.workTable td.dep4 { }
+.workList table.workTable td.dep5 { }
+.workList table.workTable td.dep6 { }
+.workList table.workTable td.scrId { color:#999; text-align:center }
+.workList table.workTable td.scrName { color:#333 }
+.workList table.workTable td.txtCenter { text-align:center }
+.workList table.workTable td.completeDay { text-align:center }
+.workList table.workTable td.publisher { text-align:center }
+.workList table.workTable td a {color:#444} 
+.workList .new { background:#FFFFCC}
+.workList table.workTable tbody tr {background:#fff;}
+.workList table.workTable tbody tr:hover { background:#f0f5f9}
+.workList table.workTable tbody tr:hover td, .workList table.workTable tbody tr:hover td a {color:#276eb0;}
+
+.fc_org {color:#ff6400}
+.fc_mel {color:#3dcccc}
+.fc_red {color:red}
+
+.workList tr.del td {color:#ddd !important; text-decoration:line-through; background-color:#f6f6f6}
+.workList tr.red td {color:red !important; background-color:#f6f6f6}
+
+
+
