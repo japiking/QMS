@@ -50,7 +50,9 @@ public class BizUtil {
 	 * @return html 코드가 제거된 문자열
 	 */
 	public static String htmlClean(String str) {
-		return str.replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", "");
+		if(str != null)
+			return str.replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", "");
+		else return str;
 	}
 
 	/**
