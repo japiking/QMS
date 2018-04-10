@@ -54,9 +54,6 @@ public class lgn_login_do implements SpbBiz {
     		String requestIp					= StringUtil.null2void(request.getRemoteAddr());
     		String Ip							= userMap.get("USERIP");
     		
-    		System.out.println("LSJ---11>>"+userMap.toString());
-    		System.out.println("LSJ---22>>"+userMap.get("USERID"));
-    		System.out.println("LSJ---33>>"+StringUtil.null2void(userMap.get("USERID")).trim());
     		/* 
     		if( requestIp != null) {
     			if( !"".equals(Ip) && !"".equals(requestIp) && !requestIp.equals(Ip) ) {
@@ -92,8 +89,6 @@ public class lgn_login_do implements SpbBiz {
     		userSession.setManagementGrade(StringUtil.null2void(userMap.get("MANAGEMENTGRADE")).trim());
     		userSession.setUserIp(StringUtil.null2void(userMap.get("USERIP")).trim());
 			
-    		System.out.println("LSJ----------------userID>>"+userSession.getUserID());
-    		
     		if(prjrList.size() == 1){
     			// 가입된 프로젝트가 하나일 경우
     			Map<String,String> map = prjrList.get(0);
@@ -112,7 +107,7 @@ public class lgn_login_do implements SpbBiz {
     			dataMap.put("PAGE_GBN", 	"M");	// 프로젝트 선택페이지로 이동    			
     		}
     		
-    		if("0".equals(userMap.get("MANAGEMENTGRADE"))){
+    		if("0".equals(userMap.get("MANAGEMENTGRADE"))){ 
     			dataMap.put("PAGE_GBN", 	"P");	// 프로젝트 관리페이지 이동
     		}
     		
