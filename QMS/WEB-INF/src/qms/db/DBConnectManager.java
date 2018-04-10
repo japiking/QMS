@@ -49,6 +49,10 @@ public class DBConnectManager {
 		try{
 			InputStream inputStream = new FileInputStream(_PATH  + _MYBATIS_CONFIG);
 			dbSession = new SqlSessionFactoryBuilder().build(inputStream);
+			
+			if(dbSession == null) {
+				LOG.debug("dbSession is Null");
+			}
 		}catch(IOException e){
 			dbSession = null;
 			e.printStackTrace();
