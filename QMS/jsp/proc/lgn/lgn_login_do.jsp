@@ -87,7 +87,8 @@ public class lgn_login_do implements SpbBiz {
     		userSession.setUserName(StringUtil.null2void(userMap.get("USERNAME")).trim());
     		userSession.setManagementGrade(StringUtil.null2void(userMap.get("MANAGEMENTGRADE")).trim());
     		userSession.setUserIp(StringUtil.null2void(userMap.get("USERIP")).trim());
-
+			
+    		System.out.println("LSJ----------------userID>>"+userSession.getUserID());
     		
     		if(prjrList.size() == 1){
     			// 가입된 프로젝트가 하나일 경우
