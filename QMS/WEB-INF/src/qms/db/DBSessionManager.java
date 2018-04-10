@@ -39,7 +39,7 @@ public class DBSessionManager implements SqlSession{
 				LOG.debug("sqlSession is Null");
 			}
 		} catch(Exception e){
-			e.printStackTrace();
+			e.printStackTrace(); 
 			if(sqlSession != null) try{sqlSession.close();} catch(Exception e1){}
 		}
 	}
