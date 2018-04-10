@@ -43,16 +43,19 @@ public class lgn_login_do implements SpbBiz {
     		param.put("USERID", 		userId);
     		param.put("USER_PASSWORD", 	userPw);
     		
-    		Map<String,String> userMap	= qmsDB.selectOne("QMS_LOGIN.USERINFO_R001", param);
+    		List<Map<String,String>> userList	= qmsDB.selectList("QMS_LOGIN.USERINFO_R001", param);
     		
     		// 회원가입 화면으로 이동
-    		if( userMap == null || userMap.isEmpty() ) {
+    		if( userList.size() == 0 ) {
     			throw new Exception("등록된 사용자가 아니거나, 패스워드가 일치 하지 않습니다.");
     		}
     		
-    		//Map<String,String> userMap			= userList.get(0);
+    		Map<String,String> userMap			= userList.get(0);
     		String requestIp					= StringUtil.null2void(request.getRemoteAddr());
     		String Ip							= userMap.get("USERIP");
+    		
+    		System.out.println("LSJ---11>>"+userMap.toString());
+    		System.out.println("LSJ---22>>"+userMap);
     		/* 
     		if( requestIp != null) {
     			if( !"".equals(Ip) && !"".equals(requestIp) && !requestIp.equals(Ip) ) {
