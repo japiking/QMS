@@ -15,7 +15,7 @@
 		<environment id="development">
 			<transactionManager type="JDBC"/>
 				<dataSource type="JNDI">
-					<property name="data_source" value="java:comp/env/jdbc/qmsDB"/>
+					<property name="data_source" value="java/qmsDB"/>
 				</dataSource> 
 			 <!--	
 				<dataSource type="POOLED">
