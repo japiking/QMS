@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_BBS_MEALTICKET">
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<result property="SEQ"            column="SEQ"			javaType="String" /> 
+		<result property="DEPTH"          column="DEPTH"		javaType="String" /> 
+		<result property="CONTENTS"       column="CONTENTS"		javaType="String" /> 
+		<result property="BBS_REG_DATE"   column="BBS_REG_DATE" javaType="String" /> 
+		<result property="COUNT"          column="COUNT"      	javaType="String" /> 
+		<result property="FILE_INFO"      column="FILE_INFO"    javaType="String" />
+	
+	</resultMap>
+	
+	<!-- 식권게시판 목록 조회 -->
+	<select id="BOARD_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT  INN.ROW_SEQ,																		 
+				INN.BOARD_ID,                                                                      
+		        INN.BBS_ID,                                                                        
+		        INN.SEQ,                                                                           
+		        INN.DEPTH,                                                                         
+		        INN.TITLE,                                                                         
+		        INN.CONTENTS,                                                                      
+		        INN.BBS_USER,                                                                      
+		        INN.BBS_REG_DATE,                                                                  
+		        INN.COMPLETION_DATE,                                                                  
+		        COALESCE(INN.BBS_FILE, 'N') AS BBS_FILE,									  		 
+		        INN.COUNT,                                                                         
+		        INN.USERNAME,                                                                      
+		        INN.RECIPIENT_DVD                                                                  
+		FROM (SELECT ROW_NUMBER() OVER () as ROW_SEQ, INNER_TABLE.*     
+		      FROM (                                                                                 
+		          SELECT B.*, C.USERNAME, A.RECIPIENT_DVD                                            
+		          FROM   BBS_RECIPIENT A, BOARD B, USERINFO C                                        
+		          WHERE  A.PROJECT_ID   = #{PROJECT_ID} 			                                             
+		          AND    A.BOARD_ID     = #{BOARD_ID}  			                                             
+		          AND    A.RECIPIENT_ID = #{RECIPIENT_ID}  		                                                 
+		          AND    A.BBS_ID       = B.BBS_ID                                                   
+		          AND    B.BBS_USER     = C.USERID 
+		          AND    B.BBS_REG_DATE = #{BBS_REG_DATE}
+		          AND    B.DEL_YN		='N'                                                  
+		          ORDER BY B.SEQ DESC, B.DEPTH ASC                                                   
+		      ) INNER_TABLE                                                                          
+		      WHERE BOARD_ID = #{BOARD_ID}  			                                                         
+		) INN                                                                                 
+		WHERE ROW_SEQ BETWEEN ${FROMCNT}  AND ${TOCNT}                                                                 
+		ORDER BY INN.SEQ DESC    
+	</select>
+	
+	<!--  식권게시판목록 건수 조회 -->
+	<select id="BOARD_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+	   	SELECT COUNT(A.BBS_ID) AS COUNT 		
+		FROM   BBS_RECIPIENT A, BOARD B		
+		WHERE  A.PROJECT_ID   = #{PROJECT_ID}				
+		AND    A.BOARD_ID     = #{BOARD_ID}				
+		AND    A.RECIPIENT_ID = #{RECIPIENT_ID}	
+		AND    B.BBS_REG_DATE = #{BBS_REG_DATE}			
+		AND    A.BBS_ID       = B.BBS_ID
+	</select>
+	
+	<!-- 식권게시물에 해당하는 사용자 정보 불러오기 -->
+	<select id="BBS_RECIPIENT_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+        SELECT B.USERNAME ||'(' || A.RECIPIENT_ID || ')' AS NAME	
+		FROM   BBS_RECIPIENT A, USERINFO B							
+		WHERE  A.PROJECT_ID = #{PROJECT_ID}				
+		AND    A.BOARD_ID   = #{BOARD_ID}				
+		AND    A.BBS_ID     = #{BBS_ID}				
+		AND    A.RECIPIENT_DVD = 'R'		
+		AND    A.RECIPIENT_ID = B.USERID	                                             
+	</select>
+</mapper>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_ADMIN">
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<result property="AUTHORITYGRADE" column="AUTHORITYGRADE" javaType="String"/>
+		<result property="SORT_SEQ" column="SORT_SEQ" javaType="String"/>
+		<result property="CNT" column="CNT" javaType="String"/>
+	</resultMap>
+	
+	<!-- 메뉴타입 코드값 가져오기 -->
+	<select id="MENUTYPE_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	   SELECT MENU_TYPE_ID, MENU_KR_NAME
+	   FROM MENUTYPE
+	</select>
+	
+	<!-- 프로젝트별 메뉴정보 -->
+	<select id="MENU_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT BOARD_ID,PROJECT_ID, KOR_MENU_NAME, MENU_TYPE_ID, AUTHORITYGRADE
+		FROM MENU
+		WHERE PROJECT_ID = #{PROJECT_ID} AND USE_FLAG='Y'
+		ORDER BY SORT_SEQ ASC
+	</select>
+	
+	<!-- 권한등급 코드 -->
+	<select id="AUTHORITY_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT AUTHORITYGRADE, AUTH_NAME
+		FROM AUTHORITY
+		ORDER BY AUTHORITYGRADE ASC
+	</select>
+	
+	<!-- 비교 메뉴정보 -->
+	<select id="MENU_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT BOARD_ID, PROJECT_ID
+		FROM MENU
+		WHERE PROJECT_ID = #{PROJECT_ID}
+	</select>
+	
+	<!-- 프로젝트별 메뉴정보 수정 -->
+	<update id="MENU_U001" parameterType="hashMap">
+		UPDATE MENU
+		SET SORT_SEQ=#{SEQ}, KOR_MENU_NAME=#{KOR_MENU_NAME}, USE_FLAG=#{USE_FLAG}, AUTHORITYGRADE=#{AUTHORITYGRADE}
+		WHERE BOARD_ID=#{BOARD_ID} AND PROJECT_ID=#{PROJECT_ID}
+	</update>
+	
+	<!-- 메뉴 추가 -->
+	<insert id="MENU_I001" parameterType="hashMap">
+		INSERT INTO MENU(PROJECT_ID, BOARD_ID, SORT_SEQ, MENU_TYPE_ID, USE_FLAG, KOR_MENU_NAME, MENU_REG_DATE, AUTHORITYGRADE) 
+		VALUES(
+				#{PROJECT_ID},
+				#{BOARD_ID},
+				#{SORT_SEQ},
+				#{MENU_TYPE_ID},
+				#{USE_FLAG},
+				#{KOR_MENU_NAME},
+				CURRENT_DATE,
+				#{AUTHORITYGRADE}
+				)
+	</insert>
+	
+	<!-- 사용하지 않는 메뉴 삭제(수정 상태값만 변경) -->
+	<update id="MENU_U002" parameterType="hashMap">
+		UPDATE MENU
+		SET USE_FLAG='N', SORT_SEQ=999
+		WHERE BOARD_ID=#{BOARD_ID} AND PROJECT_ID=#{PROJECT_ID}
+	</update>
+	
+	<!-- 메뉴정보 리로드 -->
+	<select id="MENU_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT A.PROJECT_ID, A.BOARD_ID, A.SORT_SEQ,
+			   A.KOR_MENU_NAME, A.ENG_MENU_NAME, A.MENU_TYPE_ID,
+			   A.MENU_REG_DATE, A.USE_FLAG, B.AUTHORITYGRADE, T.MENU_VIEW
+		FROM   MENU A, PROJECTUSERINFO B, MENUTYPE T
+		WHERE  A.PROJECT_ID = #{PROJECT_ID}
+		AND    A.PROJECT_ID = B.PROJECTID
+		AND    A.MENU_TYPE_ID = T.MENU_TYPE_ID
+		AND    B.USERID     = #{USERID}
+		AND    A.USE_FLAG = 'Y'
+		AND    A.AUTHORITYGRADE >= B.AUTHORITYGRADE
+		ORDER BY A.SORT_SEQ ASC	   
+	</select>
+	
+	<!-- 프로젝트 사용자별 가입및 등급정보-->
+	<select id="PROJECTUSERINFO_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT P.AUTHORITYGRADE , P.USERID, P.PROJECTID, U.USERNAME
+		FROM PROJECTUSERINFO P, USERINFO U
+		WHERE P.USERID = U.USERID
+		AND P.PROJECTID=#{PROJECTID}
+	</select>
+	
+	<select id="PROJECTUSERINFO_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT count(*) CNT
+		FROM PROJECTUSERINFO P, USERINFO U
+		WHERE P.USERID = U.USERID
+		AND  P.PROJECTID=#{PROJECTID} AND (P.USERID LIKE '%'||#{USERID}||'%' OR U.USERNAME LIKE '%'||#{USERID}||'%')
+	</select>
+	<!-- 사용자에  -->
+	<select id="USERINFO_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT USERID, USERNAME
+		FROM USERINFO
+		WHERE USERID =#{USERID}
+	</select>
+	
+	<select id="USERINFO_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT C.USERID, C.USERNAME
+        FROM   USERINFO C
+        WHERE  C.USERID != 'superuser'
+        	AND    (C.USERID LIKE '%' || #{USERID} || '%' OR C.USERNAME LIKE '%' || #{USERID} || '%')
+        EXCEPT
+        SELECT A.USERID, A.USERNAME
+        FROM   USERINFO A, PROJECTUSERINFO B
+        WHERE  A.USERID = B.USERID
+        	AND    B.PROJECTID = #{PROJECTID} 
+	</select>
+	
+	<!-- 기존등록자 목록 가져오기-->
+	<select id="PROJECTUSERINFO_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT PROJECTID, USERID, AUTHORITYGRADE
+		FROM PROJECTUSERINFO
+		WHERE PROJECTID=#{PROJECTID}
+	</select>
+	
+	<!-- 기존등록자 등급변경-->
+	<update id="PROJECTUSERINFO_U001" parameterType="hashMap">
+		UPDATE PROJECTUSERINFO
+		SET AUTHORITYGRADE=#{AUTHORITYGRADE}
+		WHERE USERID=#{USERID} AND PROJECTID=#{PROJECTID}
+	</update>
+	
+	<!-- 신규 등록자 추가 -->
+	<insert id="PROJECTUSERINFO_I001" parameterType="hashMap">
+		INSERT INTO PROJECTUSERINFO (PROJECTID, USERID, AUTHORITYGRADE)
+		VALUES(	#{PROJECT_ID},
+				#{USERID},
+				#{AUTHORITYGRADE}
+				)
+	</insert>
+	
+	<!-- 프로젝트 등록된 사용자 삭제 -->
+	<delete id="PROJECTUSERINFO_D001" parameterType="hashMap">
+		DELETE FROM PROJECTUSERINFO
+		WHERE PROJECTID=#{PROJECTID} AND USERID=#{USERID}
+	</delete>
+</mapper>

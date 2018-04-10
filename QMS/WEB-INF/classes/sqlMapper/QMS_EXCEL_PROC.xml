@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_EXCEL_PROC">
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<result property="BOARD_NAME"            column="KOR_MENU_NAME"      javaType="String" /> 
+	</resultMap>
+	
+	<!-- Excel파일 업로드(xls) -->
+	<insert id="BOARD_C001" parameterType="hashMap">
+	    INSERT INTO BOARD (
+		TITLE, CONTENTS, STATE, BOARD_ID, BBS_USER, BBS_ID, SEQ, BBS_REG_DATE, DEPTH, COUNT, CHANEL_NAME, COMPLETION_DATE, BBS_FILE, DEL_YN
+		)VALUES(
+			#{TITLE},
+			#{CONTENTS},
+			#{STATE},
+			#{BOARD_ID}, 
+			#{BBS_USER},
+			#{BBS_ID}, 
+			NEXT VALUE FOR BOARD_SEQ, 
+			CURRENT_DATE, 
+			1, 
+			0, 
+			#{CHANEL_NAME}, 
+			#{COMPLETION_DATE},
+			'N', 
+			'N'
+		)
+	</insert>
+	
+	<!-- Excel파일 업로드(WBS-xls) -->
+	<insert id="WBS_C001" parameterType="hashMap">
+	    INSERT INTO WBS
+		VALUES(
+			#{PROJECT_ID},
+			#{SEQ},
+			#{TASK_LEVEL},
+			#{TASK_CODE},
+			#{TASK_TITLE},
+			#{TASK_DOCUMENT},
+			#{TASK_RNR},
+			#{STATE},
+			#{PLAN_STTG_DATE},
+			#{PLAN_ENDG_DATE},
+			#{PLAN_MAJOR},
+			#{PLAN_TERM},
+			#{REAL_STTG_DATE},
+			#{REAL_ENDG_DATE},
+			#{REAL_MAJOR},
+			#{REAL_TERM},
+			#{TOT_PERIOD},
+			#{PROGRESS_DATE},
+			#{REAL_PROGRESS},
+			'222',
+			'0',
+			#{CONFIRM_USER}
+		)
+	</insert>
+	
+	<!-- WBS삭제 -->
+	<delete id="WBS_D001" parameterType="hashMap">
+		DELETE
+		FROM   WBS
+		WHERE PROJECT_ID = #{PROJECT_ID}
+	</delete>
+</mapper>

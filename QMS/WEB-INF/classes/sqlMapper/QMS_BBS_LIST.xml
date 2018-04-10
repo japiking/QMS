@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_BBS_LIST">
+	
+<!-- ================================ -->
+<!--    진척관리 및 공지사항 QUERY    -->
+<!-- ================================ -->
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<!-- 날짜 및 int 타입의 데이터는 String으로 형변환 함. -->
+		<result property="COMPLETION_DATE"      column="COMPLETION_DATE"    javaType="String" /> 
+		<result property="BBS_REG_DATE"         column="BBS_REG_DATE"       javaType="String" /> 
+		<result property="SEQ"               	column="SEQ"      			javaType="String" /> 
+		<result property="DEPTH"               	column="DEPTH"      		javaType="String" /> 
+		<result property="ROW_SEQ"              column="ROW_SEQ"      		javaType="String" /> 
+		<result property="COUNT"               	column="COUNT"      		javaType="String" /> 
+	</resultMap>
+	<!-- 진척관리 목록  -->
+	<select id="BOARD_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT  INN.ROW_SEQ,											
+		   		INN.BOARD_ID,                                        
+		        INN.BBS_ID,                                          
+		        INN.SEQ,                                             
+		        INN.DEPTH,                                           
+		        INN.TITLE,                                           
+		        INN.CONTENTS,                                        
+		        INN.BBS_USER,                                        
+		        INN.BBS_REG_DATE,                                    
+		        COALESCE(INN.BBS_FILE, 'N') AS BBS_FILE,				
+		        INN.COUNT,                                           
+		        INN.STATE,                                           
+		        INN.USERNAME,                                        
+		        INN.COMPLETION_DATE,                                 
+		        COALESCE(INN.CHANEL_NAME, '-') AS CHANEL_NAME,
+		        INN.COMPLETE_DATE,
+                INN.COMPLETE_TIME,        
+                INN.CONFIRM_USER        
+		FROM (SELECT ROW_NUMBER() OVER () as ROW_SEQ, INNER_TABLE.*  
+		      FROM (                                                 
+		          SELECT A.*, B.USERNAME   							
+		          FROM  BOARD A, USERINFO B                          
+					 WHERE A.BBS_USER = B.USERID						
+					 AND   COALESCE(A.DEL_YN,'N') = 'N'		
+				<if test="CHANEL_NAME != null" >
+					 AND  A.CHANEL_NAME = #{CHANEL_NAME}
+				</if>
+				<if test="TITLE != null" >
+					 AND  A.TITLE LIKE '%' || #{TITLE} || '%'
+				</if>
+              	     AND  A.BOARD_ID = #{BOARD_ID}              
+        			 ORDER BY SEQ DESC, depth ASC
+              ) INNER_TABLE                   
+        ) INN                              		
+        WHERE ROW_SEQ BETWEEN ${FROM_SEQ} AND ${TO_SEQ}         
+	</select>
+	
+	<!-- 첨부파일 목록 가져오기  -->
+	<select id="BBS_ATTACHMENT_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+		    SELECT A.BBS_ID, A.FILE_NAME, A.FILE_PATH, A.SEQ
+		    FROM   BBS_ATTACHMENT A 
+		    WHERE  A.BBS_ID = #{BBS_ID}
+		    AND DEL_FLAG = 'N'
+	</select>
+	
+	<!-- 진척관리 목록 페이징  -->
+	<select id="BOARD_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+		    SELECT COUNT(*) COUNT FROM BOARD A
+		    WHERE A.BOARD_ID = #{BOARD_ID} 
+		    AND   COALESCE(A.DEL_YN,'N') != 'Y'	
+    	<if test="CHANEL_NAME != null" >
+			AND  A.CHANEL_NAME = #{CHANEL_NAME}
+		</if>
+	</select>
+
+	<!-- 진척관리 목록 통계  -->
+	<resultMap id="QUERY_RESULT2" type="hashMap">
+		<!-- int 타입의 데이터는 String으로 형변환 함. -->
+		<result property="STA1"      column="STA1"    javaType="String" /> 
+		<result property="STA2"      column="STA2"    javaType="String" /> 
+		<result property="STA3"      column="STA3"    javaType="String" /> 
+		<result property="STA4"      column="STA4"    javaType="String" /> 
+	</resultMap>
+	<select id="BOARD_R003" parameterType="hashMap" resultMap="QUERY_RESULT2">
+		    SELECT SUM(A.STA1) AS STA1, 											  		
+			       SUM(A.STA2) AS STA2,                                              	
+			       SUM(A.STA3) AS STA3,                                               	
+			       SUM(A.STA4) AS STA4                                               	
+			FROM (                                                                 		
+			      SELECT SUM(CASE WHEN STATE IN ('000','222') THEN 1 ELSE 0 END) AS STA1,
+			             SUM(CASE WHEN STATE = '111' THEN 1 ELSE 0 END) AS STA2,   		
+			             SUM(CASE WHEN STATE = '999' THEN 1 ELSE 0 END) AS STA3,
+			             SUM(CASE WHEN COMPLETION_DATE &lt;= #{TODAY} THEN 1 ELSE 0 END) AS STA4    		
+			      FROM  BOARD                                                      		
+			      WHERE BOARD_ID = #{BOARD_ID}  			                                  		
+			      AND   COALESCE(DEL_YN,'N') = 'N' 	                    	      		
+			      AND   DEPTH				= 1 	                    	      			
+	    	<if test="CHANEL_NAME != null" >
+				 AND    CHANEL_NAME = #{CHANEL_NAME}
+			</if>
+		    	GROUP BY STATE
+	    	) A 
+	</select>
+	<!-- 진척관리 목록 페이징  -->
+	<select id="BOARD_R004" parameterType="hashMap" resultMap="QUERY_RESULT">
+		    SELECT DISTINCT COALESCE(A.CHANEL_NAME, '') AS CHANEL_NAME
+		    FROM   BOARD A
+		    WHERE A.BOARD_ID = #{BOARD_ID}
+		    AND   COALESCE(A.DEL_YN,'N') = 'N'
+	</select>
+	<!-- 진척관리 상태변경  -->
+	<update id="BOARD_U001" parameterType="hashMap">
+		    UPDATE BOARD A
+		    SET
+		    <if test="STATE != null" >
+		    	A.STATE  = #{STATE}
+		    </if>
+		    <if test="DEL_YN != null" >
+		        A.DEL_YN = #{DEL_YN}
+	        </if>
+		    WHERE A.BOARD_ID = #{BOARD_ID}
+		    AND   A.BBS_ID   = #{BBS_ID}
+		    AND   A.SEQ      = #{SEQ}
+	</update>
+	<!-- 진척관리 상태변경(완료)  -->
+	<update id="BOARD_U002" parameterType="hashMap">
+		    UPDATE BOARD A
+		    SET
+		    	A.STATE  = #{STATE}
+		        , A.COMPLETE_DATE = CURRENT_DATE
+		        , A.COMPLETE_TIME = CURRENT_TIME
+		    WHERE A.BOARD_ID = #{BOARD_ID}
+		    AND   A.BBS_ID   = #{BBS_ID}
+		    AND   A.SEQ      = #{SEQ}
+	</update>
+	<!-- 진척관리 목록 페이징  -->
+	<select id="USERINFO_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+		    SELECT	USERID, USERNAME, USERIP, BIGO
+		    FROM 		USERINFO 
+	</select>
+	
+	<!-- 이슈사항 팝업   -->
+	<select id="USERINFO_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+		    SELECT	A.USERID, A.USERNAME
+            FROM 	USERINFO A, PROJECTUSERINFO B
+            WHERE  A.USERID = B.USERID
+            AND     B.PROJECTID = #{PROJECTID}
+	</select>
+	<!-- 진척관리 확인자 팝업   -->
+	<select id="USERINFO_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+		    SELECT A.USERID, A.USERNAME
+            FROM   USERINFO A, PROJECTUSERINFO B
+            WHERE  A.USERID = B.USERID
+            AND    B.PROJECTID = #{PROJECTID}
+            AND    B.AUTHORITYGRADE = '01'
+            AND   (A.USERID LIKE '%' || #{USERID} || '%' OR A.USERNAME LIKE '%' || #{USERID} || '%')
+	</select>
+	
+<!-- =========================== -->
+<!--    근태관리 QUERY           -->
+<!-- =========================== -->
+	<!--resultMap-->
+	<resultMap id="ATTENTIONMANAGER_RESULT" type="hashMap">
+		<!-- 날짜 및 int 타입의 데이터는 String으로 형변환 함. -->
+		<result property="ATTENTION_DATE"      	column="ATTENTION_DATE"    	javaType="String" /> 
+		<result property="COUNT"      			column="COUNT"    			javaType="String" /> 
+	</resultMap>
+	<!-- 근태관리 목록 페이징  -->
+	<select id="ATTENTIONMANAGER_R001" parameterType="hashMap" resultMap="ATTENTIONMANAGER_RESULT">
+		    SELECT INN.USERID,                                               
+            	   INN.ATTENTION_DATE,                                       
+                   INN.IN_TIME,                                              
+                   INN.OUT_TIME,                                             
+                   INN.USERNAME                                              
+            FROM (SELECT ROW_NUMBER() OVER () AS  ROW_SEQ, INNER_TABLE.*     
+                  FROM (                                                     
+                      SELECT A.*, B.USERNAME                                 
+                      FROM  ATTENTIONMANAGER A, USERINFO B, PROJECTUSERINFO C
+            		  WHERE A.USERID = B.USERID									
+            		  AND   A.USERID = C.USERID									
+            		  AND   C.PROJECTID = #{PROJECTID}										
+            		  AND   A.ATTENTION_DATE = #{ATTENTION_DATE}								
+                      ORDER BY B.USERNAME
+                  ) INNER_TABLE
+            ) INN
+            
+	</select>
+	
+	<!-- 근태관리 목록 페이징  -->
+	<select id="ATTENTIONMANAGER_R002" parameterType="hashMap" resultMap="ATTENTIONMANAGER_RESULT">
+		    SELECT COUNT(A.USERID) COUNT
+		    FROM ATTENTIONMANAGER A, PROJECTUSERINFO B 
+		    WHERE A.ATTENTION_DATE = #{ATTENTION_DATE}
+		    AND   A.USERID = B.USERID 
+		    AND   B.PROJECTID = #{PROJECTID}
+	</select>
+	
+		<select id="ATTENTIONMANAGER_R003" parameterType="hashMap" resultMap="ATTENTIONMANAGER_RESULT">
+		    SELECT INN.USERID,                                               
+            	   INN.ATTENTION_DATE,                                       
+                   INN.IN_TIME,                                              
+                   INN.OUT_TIME,                                             
+                   INN.USERNAME                                              
+            FROM (SELECT ROW_NUMBER() OVER () AS  ROW_SEQ, INNER_TABLE.*     
+                  FROM (                                                     
+                      SELECT A.*, B.USERNAME                                 
+                      FROM  ATTENTIONMANAGER A, USERINFO B, PROJECTUSERINFO C
+            		  WHERE A.USERID = #{USERID}
+            		  AND	A.USERID = B.USERID									
+            		  AND   A.USERID = C.USERID									
+            		  AND   C.PROJECTID =#{PROJECTID} 																	
+            		  <if test="ATTENTION_DATE != null">
+            		  AND	A.ATTENTION_DATE LIKE #{ATTENTION_DATE}||'%'
+            		  </if>	
+                      ORDER BY A.ATTENTION_DATE DESC
+                  ) INNER_TABLE
+            ) INN
+	</select>
+	
+	<select id="ATTENTIONMANAGER_R004" parameterType="hashMap" resultMap="ATTENTIONMANAGER_RESULT">
+		    SELECT COUNT(A.USERID) COUNT
+		    FROM ATTENTIONMANAGER A, PROJECTUSERINFO B 
+		    WHERE	A.USERID=#{USERID} 
+		    AND		A.USERID = B.USERID 
+		    AND   	B.PROJECTID = #{PROJECTID}
+         <if test="ATTENTION_DATE != null">
+   		  	AND		A.ATTENTION_DATE LIKE #{ATTENTION_DATE}||'%'
+   		  </if>	
+	</select>
+	
+<!-- =========================== -->
+<!--    WBS QUERY           -->
+<!-- =========================== -->
+	<!--resultMap-->
+	<resultMap id="WBS_RESULT" type="hashMap">
+		<!-- 날짜 및 int 타입의 데이터는 String으로 형변환 함. -->
+	</resultMap>
+	<!-- WBS 목록  -->
+	<select id="WBS_R001" parameterType="hashMap" resultMap="WBS_RESULT">
+		    SELECT PROJECT_ID, SEQ, TASK_LEVEL, TASK_CODE, TASK_TITLE, TASK_DOCUMENT, TASK_RNR, STATE,	
+			       PLAN_STTG_DATE, PLAN_ENDG_DATE, PLAN_MAJOR, PLAN_TERM, REAL_STTG_DATE, REAL_ENDG_DATE,
+			       REAL_MAJOR, REAL_TERM, TOT_PERIOD, PROGRESS_DATE, REAL_PROGRESS, NOW_STAT, CONFIRM_USER
+			FROM   WBS 			
+			WHERE  PROJECT_ID = #{PROJECT_ID} 
+	</select>
+	
+	<!-- WBS 목록  -->
+	<select id="WBS_R003" parameterType="hashMap" resultMap="WBS_RESULT">
+		    SELECT PROJECT_ID, SEQ, TASK_LEVEL, TASK_CODE, TASK_TITLE, TASK_DOCUMENT, TASK_RNR, STATE,	
+			       PLAN_STTG_DATE, PLAN_ENDG_DATE, PLAN_MAJOR, PLAN_TERM, REAL_STTG_DATE, REAL_ENDG_DATE,
+			       REAL_MAJOR, REAL_TERM, TOT_PERIOD, PROGRESS_DATE, REAL_PROGRESS, NOW_STAT, CONFIRM_USER
+			FROM   WBS 			
+			WHERE  PROJECT_ID = #{PROJECT_ID} 
+			ORDER BY TASK_LEVEL, TASK_CODE
+	</select>
+
+	<!-- WBS 상태변경  --> 
+	<update id="WBS_U001" parameterType="hashMap">
+		    UPDATE WBS A
+		    SET    A.NOW_STAT   = #{NOW_STAT}
+		    <if test="REAL_PROGRESS != null">
+		    	  ,A.REAL_PROGRESS   = #{REAL_PROGRESS}
+		    </if>
+		    WHERE  A.PROJECT_ID = #{PROJECT_ID}
+		    AND    A.SEQ        = #{SEQ}
+	</update>
+	
+	<!-- WBS 현재 진척율 조회 -->
+	<select id="WBS_R002" parameterType="hashMap" resultMap="WBS_RESULT">
+		SELECT  PROJECT_ID, SEQ, TASK_LEVEL, TASK_CODE, TASK_TITLE, TASK_DOCUMENT, TASK_RNR, STATE,	
+		       PLAN_STTG_DATE, PLAN_ENDG_DATE, PLAN_MAJOR, PLAN_TERM, REAL_STTG_DATE, REAL_ENDG_DATE,
+		       REAL_MAJOR, REAL_TERM, TOT_PERIOD, PROGRESS_DATE, REAL_PROGRESS, NOW_STAT, CONFIRM_USER
+		FROM   WBS 			
+		WHERE  PROJECT_ID = #{PROJECT_ID} AND SEQ = #{SEQ}
+	</select>
+	
+	<!-- WBS 현재 진척율 조회 -->
+	<update id="WBS_U002" parameterType="hashMap">
+		    UPDATE WBS A
+		    SET    A.TASK_TITLE   	= #{TASK_TITLE}
+		    , A.TASK_DOCUMENT   	= #{TASK_DOCUMENT}
+		    , A.TASK_RNR   			= #{TASK_RNR}
+		    , A.PLAN_STTG_DATE   	= #{PLAN_STTG_DATE}
+		    , A.PLAN_ENDG_DATE   	= #{PLAN_ENDG_DATE}
+		    , A.PLAN_TERM   		= #{PLAN_TERM}
+		    , A.REAL_STTG_DATE   	= #{REAL_STTG_DATE}
+    	  	, A.REAL_ENDG_DATE   	= #{REAL_ENDG_DATE}
+    	  	, A.REAL_TERM   		= #{REAL_TERM}
+		    WHERE  A.PROJECT_ID 	= #{PROJECT_ID}
+		    AND    A.SEQ        	= #{SEQ}
+	</update>
+</mapper>

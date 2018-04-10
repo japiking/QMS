@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="TEST_QUERY">
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<result property="BOARD_NAME"            column="KOR_MENU_NAME"      javaType="String" /> 
+	</resultMap>
+	
+	<!-- 단순 SELECT -->
+	<select id="TEST_SELECT3" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT A.PROJECT_ID, A.KOR_MENU_NAME, A.BOARD_ID, A.AUTHORITYGRADE
+		FROM   MENU A
+		WHERE  1 = 1
+		AND  A.PROJECT_ID = #{PROJECT_ID}
+		ORDER  BY A.SORT_SEQ
+	</select>
+	
+	<!-- Dynamic으로  if else문 처리 -->
+	<select id="TEST_SELECT" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT A.PROJECT_ID, A.KOR_MENU_NAME, A.BOARD_ID, A.AUTHORITYGRADE
+		FROM   MENU A
+		WHERE  1 = 1
+		AND  A.PROJECT_ID = #{PROJECT_ID}
+		<choose>
+			<when test="BOARD_ID == 'BRD_0000000011'">
+			AND  A.BOARD_ID = #{BOARD_ID}
+			</when>
+			<when test="BOARD_ID != null">
+			AND  A.BOARD_ID = #{BOARD_ID}
+			</when>
+			<otherwise>
+			AND A.BOARD_ID = 'BRD_0000000010'
+			</otherwise>
+		</choose>
+		
+	</select>
+	
+	<!-- Dynamic으로  if문 처리 -->
+	<select id="TEST_SELECT2" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT A.PROJECT_ID, A.KOR_MENU_NAME, A.BOARD_ID, A.AUTHORITYGRADE
+		FROM   MENU A
+		WHERE  1 = 1
+		<if test="PROJECT_ID != null" >
+			AND  A.PROJECT_ID = #{PROJECT_ID}
+		</if>
+		ORDER  BY A.SORT_SEQ
+	</select>
+	
+	<!-- Insert문 예시 -->
+	<update id="TEST_UPDATE" parameterType="hashMap">
+	    UPDATE MENU A
+	    SET    A.KOR_MENU_NAME = '장난아니다'
+	    WHERE  A.BOARD_ID = #{BOARD_ID}
+	</update>
+	
+	<!-- Insert문 예시 -->
+	<insert id="TEST_INSERT" parameterType="hashMap">
+	    INSERT INTO DUAL
+	    VALUES('ABCD')
+	</insert>
+	
+	<!-- Dynamic으로  if문 처리 -->
+	<select id="TEST_USERINFO" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT A.*
+		FROM   USERINFO A
+	</select>
+</mapper>

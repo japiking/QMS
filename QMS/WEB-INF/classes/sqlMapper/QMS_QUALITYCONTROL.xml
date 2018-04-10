@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_QUALITYCONTROL">
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<result property="TEST_ID"						column="TEST_ID"			javaType="String" />	
+		<result property="TEST_STTG_DATE"            	column="TEST_STTG_DATE"     javaType="String" />
+		<result property="TEST_ENDG_DATE"            	column="TEST_ENDG_DATE"     javaType="String" />
+		<result property="CNT"            				column="CNT"     			javaType="String" />
+		<result property="TEST_SEQ"            			column="TEST_SEQ"     		javaType="String" />
+		<result property="SCENARIO_SEQ"            		column="SCENARIO_SEQ"     	javaType="String" />
+		<result property="TEST_BIGO"            		column="TEST_BIGO"     		javaType="String" />
+		<result property="START_DATE"					column="START_DATE"			javaType="String" />
+		<result property="END_DATE"						column="END_DATE"			javaType="String" />
+		<result property="STATUS_LEVEL"					column="STATUS_LEVEL"		javaType="String" />
+		
+	</resultMap>
+	
+	
+	<select id="TEST_MANAGEMENT_R001" resultType="HashMap" resultMap="QUERY_RESULT">
+	SELECT  PROJECT_ID,
+			TEST_ID,
+			TEST_NM,
+			TEST_STTG_DATE,
+			TEST_ENDG_DATE,
+			TEST_BIGO, DEL_FLAG
+	FROM TEST_MANAGEMENT
+	WHERE PROJECT_ID = #{PROJECT_ID}
+	ORDER BY TEST_STTG_DATE ASC
+	</select>
+	
+	
+	<select id="TEST_MANAGEMENT_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT  *
+		FROM   TEST_MANAGEMENT	
+		WHERE  TEST_ID = #{TEST_ID}
+	</select>
+	
+	
+	<select id="TEST_MANAGEMENT_R004" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT COUNT(*) CNT
+		FROM STEP_ACTION
+		WHERE 	PROJECT_ID =#{PROJECT_ID}
+		AND	  	TEST_ID	 =#{TEST_ID}
+		AND	  	SCENARIO_ID=#{SCENARIO_ID}
+		AND   	CASE_ID=#{CASE_ID}
+		AND	  	STEP_ID=#{STEP_ID}
+		<if test="TESTER_ID != null">
+		AND	  	TESTER_ID	 =#{TESTER_ID}	
+		</if>	
+	</select>
+	
+	<select id="TEST_MANAGEMENT_R006" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT COUNT(*) CNT
+		FROM STEP_ACTION
+		WHERE 	PROJECT_ID =#{PROJECT_ID}
+		AND	  	TEST_ID	 =#{TEST_ID}
+		AND	  	SCENARIO_ID=#{SCENARIO_ID}
+		AND   	CASE_ID=#{CASE_ID}
+		AND	  	STEP_ID=#{STEP_ID}
+		AND	  	DEL_FLAG='N'
+		<if test="TESTER_ID != null">
+		AND	  	TESTER_ID	 =#{TESTER_ID}	
+		</if>	
+	</select>
+	
+	<select id="SCENARIO_R001" resultType="HashMap" resultMap="QUERY_RESULT">
+	SELECT COUNT(*) CNT 
+	FROM SCENARIO
+	WHERE  PROJECT_ID=#{PROJECT_ID} 
+		AND TEST_ID = #{TEST_ID}
+	</select>
+	
+	
+	<select id="SCENARIO_R002" resultType="HashMap" resultMap="QUERY_RESULT">
+	SELECT PROJECT_ID,
+		TEST_ID,
+		SCENARIO_ID,
+		SCENARIO_NM,
+		START_DATE,
+		END_DATE,
+		DEL_FLAG
+	FROM SCENARIO
+	WHERE PROJECT_ID=#{PROJECT_ID} 
+		AND TEST_ID=#{TEST_ID}
+	<if test="SCENARIO_ID != null">
+	AND SCENARIO_ID =#{SCENARIO_ID}
+	</if>
+	</select>
+	
+	<select id="SCENARIO_R004" resultType="HashMap" resultMap="QUERY_RESULT">
+	SELECT COUNT(*) CNT 
+	FROM SCENARIO
+	WHERE  PROJECT_ID=#{PROJECT_ID} 
+		AND TEST_ID = #{TEST_ID}
+		AND DEL_FLAG = 'N'
+	</select>
+	
+	
+	<select id="CIRCUMSTANCE_R001" resultType="HashMap" resultMap="QUERY_RESULT">
+	SELECT COUNT(*) CNT 
+	FROM CIRCUMSTANCE 
+	WHERE  PROJECT_ID=#{PROJECT_ID} 
+		AND TEST_ID = #{TEST_ID}
+	</select>
+	
+	
+	<select id="CIRCUMSTANCE_R002" resultType="HashMap" resultMap="QUERY_RESULT">
+	SELECT PROJECT_ID,
+		CASE_ID,TEST_ID,
+		SCENARIO_ID,
+		CASE_NM,
+		CASE_STATUS,
+		START_DATE,
+		END_DATE,
+		DEL_FLAG
+	FROM CIRCUMSTANCE
+	WHERE PROJECT_ID=#{PROJECT_ID} 
+		AND TEST_ID=#{TEST_ID}
+		AND SCENARIO_ID=#{SCENARIO_ID}
+	</select>
+	
+	<select id="CIRCUMSTANCE_R004" resultType="HashMap" resultMap="QUERY_RESULT">
+	SELECT COUNT(*) CNT 
+	FROM CIRCUMSTANCE 
+	WHERE  PROJECT_ID=#{PROJECT_ID} 
+		AND TEST_ID = #{TEST_ID}
+		AND DEL_FLAG = 'N'
+	</select>
+	
+	<select id="STEP_R001" resultType="HashMap" resultMap="QUERY_RESULT">
+	SELECT COUNT(*) CNT 
+	FROM STEP 
+	WHERE PROJECT_ID=#{PROJECT_ID} 
+		AND TEST_ID = #{TEST_ID}
+	</select>
+	
+	
+	<select id="STEP_R002" resultType="HashMap" resultMap="QUERY_RESULT">
+	SELECT PROJECT_ID,
+		TEST_ID,
+		SCENARIO_ID,
+		CASE_ID,
+		STEP_ID,
+		STEP_NM,
+		START_DATE,
+		END_DATE,
+		DEL_FLAG
+	FROM STEP
+	WHERE PROJECT_ID=#{PROJECT_ID} 
+		AND TEST_ID = #{TEST_ID}  
+		AND SCENARIO_ID=#{SCENARIO_ID} 
+		AND CASE_ID=#{CASE_ID}
+	</select>
+	
+	<select id="STEP_R004" resultType="HashMap" resultMap="QUERY_RESULT">
+	SELECT COUNT(*) CNT 
+	FROM STEP 
+	WHERE PROJECT_ID=#{PROJECT_ID} 
+		AND TEST_ID = #{TEST_ID}
+		AND DEL_FLAG = 'N'
+	</select>
+	
+	
+	<select id="STEP_ACTION_R001" resultType="HashMap" resultMap="QUERY_RESULT">
+	SELECT DISTINCT 	S.TEST_ID
+	FROM  	USERINFO AS U, STEP_ACTION AS S	
+	WHERE 	USERID		=#{USERID}
+	AND   	U.USERID	=S.TESTER_ID
+	</select>
+
+
+	<insert id="TEST_MANAGEMENT_C001">
+	INSERT INTO TEST_MANAGEMENT (
+								PROJECT_ID,
+								TEST_ID,
+								TEST_NM,
+								TEST_STTG_DATE,
+								TEST_ENDG_DATE,
+								TEST_BIGO,DEL_FLAG
+								)
+	VALUES(
+			#{PROJECT_ID},
+			#{TEST_ID},
+			#{TEST_NM},
+			#{TEST_STTG_DATE},
+			#{TEST_ENDG_DATE},
+			#{TEST_BIGO},
+			#{DEL_FLAG}
+			)
+	</insert>
+	
+	
+	<insert id="SCENARIO_C001">
+	INSERT INTO SCENARIO (
+						PROJECT_ID,
+						TEST_ID,
+						SCENARIO_ID,
+						SCENARIO_NM,
+						START_DATE,
+						END_DATE,
+						DEL_FLAG,
+						SCENARIO_SEQ
+						)
+	VALUES(
+			#{PROJECT_ID},
+			#{TEST_ID},
+			#{SCENARIO_ID},
+			#{SCENARIO_NM},
+			#{START_DATE},
+			#{END_DATE},
+			#{DEL_FLAG},
+			NEXT VALUE FOR SCENARIO_SEQ
+			)
+	</insert>
+	
+	
+	<insert id="CIRCUMSTANCE_C001">
+	INSERT INTO CIRCUMSTANCE (
+							PROJECT_ID,
+							TEST_ID,
+							SCENARIO_ID,
+							START_DATE,
+							END_DATE,
+							CASE_ID,
+							CASE_NM,
+							DEL_FLAG
+							)
+	VALUES(
+			#{PROJECT_ID},
+			#{TEST_ID},
+			#{SCENARIO_ID},
+			#{START_DATE},
+			#{END_DATE},
+			#{CASE_ID},
+			#{CASE_NM},
+			#{DEL_FLAG}
+			)
+	</insert>
+	
+	
+	<insert id="STEP_C001">
+	INSERT INTO STEP(
+					PROJECT_ID,
+					TEST_ID,
+					DETAIL_EXPLAN,
+					EXPLAN,
+					STEP_ID,
+					CASE_ID,
+					SCENARIO_ID,
+					STEP_NM,
+					START_DATE,
+					END_DATE,
+					DEL_FLAG
+					)
+	VALUES(
+			#{PROJECT_ID},
+			#{TEST_ID},
+			#{DETAIL_EXPLAN},
+			#{EXPLAN},
+			#{STEP_ID},
+			#{CASE_ID},
+			#{SCENARIO_ID},
+			#{STEP_NM},
+			#{START_DATE},
+			#{END_DATE},
+			#{DEL_FLAG}
+			)
+	</insert>
+	
+	<update id="TEST_MANAGEMENT_U001" >
+	UPDATE TEST_MANAGEMENT
+	SET 
+		TEST_NM = #{TEST_NM},
+		TEST_STTG_DATE = #{TEST_STTG_DATE},
+		TEST_ENDG_DATE= #{TEST_ENDG_DATE},
+		TEST_BIGO=#{TEST_BIGO},
+		DEL_FLAG=#{DEL_FLAG}
+	WHERE 
+		PROJECT_ID=#{PROJECT_ID}		
+	AND	TEST_ID =#{TEST_ID}		
+	</update>
+	
+	
+	<update id="SCENARIO_U001">
+	UPDATE SCENARIO
+	SET
+	<if test="SCENARIO_NM != null">
+		SCENARIO_NM	=#{SCENARIO_NM},
+		START_DATE	=#{START_DATE},
+		END_DATE	=#{END_DATE},
+	</if>
+		DEL_FLAG	=#{DEL_FLAG}	
+	WHERE
+	1=1
+	<if test="SCENARIO_ID != null">
+	AND SCENARIO_ID	=#{SCENARIO_ID}
+	</if>	
+	AND	PROJECT_ID	=#{PROJECT_ID}
+	AND	TEST_ID	  	=#{TEST_ID}
+	</update>
+	
+	
+	<update id="CASE_U001">
+		UPDATE CIRCUMSTANCE
+		SET
+		<if test="CASE_NM != null">
+			CASE_NM		=#{CASE_NM},
+			START_DATE	=#{START_DATE},
+			END_DATE	=#{END_DATE},
+		</if>
+			DEL_FLAG	=#{DEL_FLAG}	
+		WHERE
+		1 = 1 
+		<if test="CASE_ID != null">
+			AND CASE_ID		=#{CASE_ID}
+		</if>
+		<if test="SCENARIO_ID != null">
+			AND SCENARIO_ID	=#{SCENARIO_ID}
+		</if>
+			AND PROJECT_ID		=#{PROJECT_ID}
+			AND	TEST_ID	  	=#{TEST_ID}
+	</update>
+	
+	
+	<update id="STEP_U001">
+	UPDATE STEP
+	SET
+		<if test="STEP_NM != null">
+			STEP_NM		=#{STEP_NM},
+			START_DATE	=#{START_DATE},
+			END_DATE	=#{END_DATE},
+		</if>
+			DEL_FLAG	=#{DEL_FLAG}	
+	WHERE
+			1=1
+			<if test="STEP_ID != null">
+			AND STEP_ID		=#{STEP_ID}		
+			</if>
+			<if test="CASE_ID != null">
+			AND CASE_ID		=#{CASE_ID}
+			</if>
+			<if test="SCENARIO_ID != null">
+			AND SCENARIO_ID	=#{SCENARIO_ID}
+			</if>
+			AND	PROJECT_ID	=#{PROJECT_ID}
+			AND	TEST_ID	  	=#{TEST_ID}		
+	</update>
+	
+	
+	<update id="TEST_MANAGEMENT_U002" parameterType="hashMap">	
+		UPDATE	TEST_MANAGEMENT
+		SET 	DEL_FLAG= 'Y' 
+		WHERE 	PROJECT_ID=#{PROJECT_ID}		
+		AND		TEST_ID =#{TEST_ID}	
+	</update>
+	
+	
+	<update id="SCENARIO_U002" parameterType="hashMap">
+		UPDATE SCENARIO
+		SET	   DEL_FLAG= 'Y'
+		WHERE  PROJECT_ID=#{PROJECT_ID}
+		AND    TEST_ID	 =#{TEST_ID}
+		AND	   SCENARIO_ID=#{SCENARIO_ID}
+	</update>
+	
+	
+	<update id="CIRCUMSTANCE_U002" parameterType="hashMap">
+		UPDATE CIRCUMSTANCE
+		SET	   DEL_FLAG= 'Y'
+		WHERE  PROJECT_ID =#{PROJECT_ID}
+		AND    TEST_ID	  =#{TEST_ID}
+		AND	   SCENARIO_ID=#{SCENARIO_ID}
+		AND    CASE_ID	  =#{CASE_ID}
+	</update>
+	
+	
+	<update id="STEP_U002" parameterType="hashMap">
+		UPDATE 	STEP
+		SET 	DEL_FLAG='Y'
+		WHERE  PROJECT_ID =#{PROJECT_ID}
+		AND    TEST_ID	  =#{TEST_ID}
+		AND	   SCENARIO_ID=#{SCENARIO_ID}
+		AND    CASE_ID	  =#{CASE_ID}
+		AND	   STEP_ID	  =#{STEP_ID} 	
+	</update>
+	
+	
+	<select id="TEST_SEQ_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	 	SELECT CHAR(NEXT VALUE FOR TEST_SEQ) AS TEST_SEQ
+	    FROM   DUAL
+	</select>
+	
+	
+	<select id="SCENARIO_SEQ_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	 	SELECT CHAR(NEXT VALUE FOR SCENARIO_SEQ) AS SCENARIO_SEQ
+	    FROM   DUAL
+	</select>
+	
+	
+	<select id="CIRCUMSTANCE_SEQ_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	 	SELECT CHAR(NEXT VALUE FOR CASE_SEQ) AS CASE_SEQ
+	    FROM   DUAL
+	</select>
+	
+	
+	<select id="STEP_SEQ_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	 	SELECT CHAR(NEXT VALUE FOR STEP_SEQ) AS STEP_SEQ
+	    FROM   DUAL
+	</select>
+	
+	
+	<!-- testid/test명  -->
+	<select id="TEST_MANAGEMENT_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT TEST_NM,
+				TEST_ID
+		FROM TEST_MANAGEMENT
+		WHERE PROJECT_ID =#{PROJECT_ID}
+	</select>
+	
+	
+	<!--  히스토리 USERINFO,STEP_ACTION -->
+ 	<select id="HISTORY_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT	DISTINCT U.USERNAME,
+				S.TESTER_ID
+		FROM USERINFO  AS U, STEP_ACTION AS S
+		WHERE U.USERID = S.TESTER_ID
+		AND   PROJECT_ID =#{PROJECT_ID}
+		AND	  TEST_ID	 =#{TEST_ID}
+	    AND	  SCENARIO_ID=#{SCENARIO_ID}
+	</select>
+	
+	
+	<select id="HISTORY_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT	DISTINCT U.USERNAME,
+				S.TESTER_ID
+		FROM USERINFO  AS U,
+			 STEP_ACTION AS S
+		WHERE U.USERID = S.TESTER_ID
+		AND   PROJECT_ID =#{PROJECT_ID}
+		AND	  TEST_ID	 =#{TEST_ID}
+	    AND	  SCENARIO_ID=#{SCENARIO_ID}
+	    AND   CASE_ID=#{CASE_ID}
+	</select>
+	
+	<select id="HISTORY_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT	TESTER_ID,
+				START_DATE,
+				END_DATE,
+				STEP_STATUS,
+				STATUS_LEVEL,
+				TEST_ID,
+				SCENARIO_ID,
+				CASE_ID,
+				STEP_ID,
+				ACTION_SEQ,
+				DEL_FLAG
+		FROM  	STEP_ACTION
+		WHERE 	PROJECT_ID=#{PROJECT_ID}
+		AND	  	TEST_ID=#{TEST_ID}
+	    AND	  	SCENARIO_ID=#{SCENARIO_ID}
+	    AND   	CASE_ID=#{CASE_ID}
+	    AND	  	STEP_ID=#{STEP_ID}
+	    AND	  	DEL_FLAG='N'
+	    <if test="TESTER_ID != null">
+	    AND	  	TESTER_ID=#{TESTER_ID}	
+	    </if>
+	</select>
+	
+	<select id="HISTORY_R004" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT	TESTER_ID,
+				START_DATE,
+				END_DATE,
+				STEP_STATUS,
+				STATUS_LEVEL,
+				TEST_ID,
+				SCENARIO_ID,
+				CASE_ID,
+				STEP_ID,
+				ACTION_SEQ,
+				DEL_FLAG
+		FROM  	STEP_ACTION
+		WHERE 	PROJECT_ID=#{PROJECT_ID}
+		AND	  	TEST_ID=#{TEST_ID}
+	    AND	  	SCENARIO_ID=#{SCENARIO_ID}
+	    AND   	CASE_ID=#{CASE_ID}
+	    AND	  	STEP_ID=#{STEP_ID}
+	    <if test="TESTER_ID != null">
+	    AND	  	TESTER_ID=#{TESTER_ID}	
+	    </if>
+	</select>
+	
+	<!--상태값-->
+	<select id="STEP_ACTION_R005" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT A.STEP_STATUS,A.STATUS_LEVEL
+        FROM STEP AS S, STEP_ACTION A
+        WHERE S.STEP_ID = A.STEP_ID
+	        AND S.PROJECT_ID =#{PROJECT_ID}
+			AND	S.TEST_ID	 =#{TEST_ID}
+		    AND	S.SCENARIO_ID=#{SCENARIO_ID}
+		    AND S.CASE_ID=#{CASE_ID}
+		    AND	S.STEP_ID=#{STEP_ID}
+	</select>
+	
+	<!-- 실행관리 TEST리스트 -->
+	<select id="TEST_MANAGEMENT_R005" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT DISTINCT S.TESTER_ID,
+						M.TEST_NM,
+						M.TEST_STTG_DATE,
+						M.TEST_ENDG_DATE,
+						M.PROJECT_ID,
+						M.TEST_ID
+		FROM TEST_MANAGEMENT AS M,
+			STEP_ACTION AS S
+		WHERE M.TEST_ID = S.TEST_ID
+		    AND S.TESTER_ID =#{TESTER_ID}
+		    AND M.PROJECT_ID =#{PROJECT_ID}
+	</select>
+		
+	<select id="CASE_R004" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT DISTINCT S.TEST_ID,
+						S.SCENARIO_ID,
+						S.SCENARIO_NM,
+						S.START_DATE,
+						S.END_DATE
+		FROM 	SCENARIO AS S,
+			 	STEP_ACTION AS A
+		WHERE 	S.SCENARIO_ID=A.SCENARIO_ID
+		AND	  	S.TEST_ID	 = A.TEST_ID
+		AND  	A.TEST_ID	 =#{TEST_ID}
+		AND	  	A.TESTER_ID	=#{TESTER_ID}
+		AND   	S.PROJECT_ID=#{PROJECT_ID}
+	</select>
+	
+	<!-- 테스트 실행관리 시나리오 건수 -->
+	<select id="STEP_ACTION_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT COUNT(DISTINCT SCENARIO_ID) AS CNT
+		FROM STEP_ACTION
+		WHERE TESTER_ID=#{TESTER_ID}
+		AND TEST_ID=#{TEST_ID}
+		AND DEL_FLAG='N'
+	</select>
+	
+	<!--테스트 실행관리 케이스 건수  -->
+	<select id="STEP_ACTION_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT COUNT(DISTINCT CASE_ID) AS CNT
+		FROM STEP_ACTION
+		WHERE TESTER_ID=#{TESTER_ID}
+		AND TEST_ID=#{TEST_ID}
+		AND DEL_FLAG='N'
+	</select>
+	
+	<!--테스트 실행관리 스텝 건수  -->
+	<select id="STEP_ACTION_R004" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT COUNT(DISTINCT STEP_ID) AS CNT
+		FROM STEP_ACTION
+		WHERE TESTER_ID=#{TESTER_ID}
+		AND TEST_ID=#{TEST_ID}
+		AND DEL_FLAG='N'
+	</select>
+	
+	<!-- 테스트 실행관리 시나리오 목록(사용자등록 건만) -->
+	<select id="SCENARIO_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+	SELECT DISTINCT S.TEST_ID,
+					S.SCENARIO_ID,
+					S.SCENARIO_NM,
+					S.START_DATE,
+					S.END_DATE,
+					S.DEL_FLAG
+	FROM 	SCENARIO AS S,
+		 	STEP_ACTION AS A
+	WHERE 	S.SCENARIO_ID	=A.SCENARIO_ID
+	AND	  	S.TEST_ID	 	= A.TEST_ID
+	AND  	A.TEST_ID	 	=#{TEST_ID}
+	AND	  	A.TESTER_ID		=#{TESTER_ID}
+	AND   	S.PROJECT_ID	=#{PROJECT_ID}
+	AND 	S.DEL_FLAG		='N'
+	AND 	A.DEL_FLAG		='N'
+	</select>
+	
+	<!-- 테스트 실행관리 케이스 목록(사용자등록 건만) -->
+	<select id="CIRCUMSTANCE_R003" resultType="HashMap" resultMap="QUERY_RESULT">
+	SELECT DISTINCT 
+					C.TEST_ID,
+					C.SCENARIO_ID,
+					C.CASE_ID,
+					C.CASE_NM,
+					C.START_DATE,
+					C.END_DATE,
+					C.DEL_FLAG
+	FROM CIRCUMSTANCE AS C, STEP_ACTION AS S 
+	WHERE 	C.CASE_ID 		= S.CASE_ID
+		AND C.SCENARIO_ID	=S.SCENARIO_ID
+		AND C.TEST_ID		=S.TEST_ID
+		AND C.PROJECT_ID	=#{PROJECT_ID} 
+		AND C.TEST_ID		=#{TEST_ID}
+        AND C.SCENARIO_ID	=#{SCENARIO_ID}
+		AND S.TESTER_ID		=#{TESTER_ID}
+		AND S.DEL_FLAG		='N'
+		AND S.DEL_FLAG		='N'
+	</select>
+
+	<!-- 테스트 실행관리 스텝 목록(사용자등록 건만) -->
+	<select id="STEP_R003" resultType="HashMap" resultMap="QUERY_RESULT">
+		SELECT DISTINCT
+		S.TEST_ID,
+		S.SCENARIO_ID,
+		S.CASE_ID,
+		S.STEP_ID,
+		S.STEP_NM,
+		S.START_DATE,
+		S.END_DATE,
+		S.DEL_FLAG
+	FROM STEP AS S, STEP_ACTION AS T
+	WHERE S.CASE_ID = T.CASE_ID
+		AND S.SCENARIO_ID=T.SCENARIO_ID
+		AND S.TEST_ID	 =T.TEST_ID
+		AND S.STEP_ID	 =T.STEP_ID 
+		AND S.TEST_ID=#{TEST_ID}
+        AND S.SCENARIO_ID=#{SCENARIO_ID}
+        AND S.CASE_ID=#{CASE_ID}
+		AND T.TESTER_ID=#{TESTER_ID}
+		AND S.DEL_FLAG='N'
+		AND T.DEL_FLAG='N'
+	</select>
+	
+	<!-- 상태변경시 update -->
+	<update id="STEP_ACTION_U001" parameterType="hashMap">
+	UPDATE 	STEP_ACTION
+	SET		STEP_STATUS=#{STEP_STATUS},	
+			STATUS_LEVEL=#{STATUS_LEVEL},
+			END_DATE=#{END_DATE}
+	WHERE	TEST_ID=#{TEST_ID}
+	AND		TESTER_ID=#{TESTER_ID}
+	AND		SCENARIO_ID=#{SCENARIO_ID}
+	AND		CASE_ID=#{CASE_ID}
+	AND		STEP_ID=#{STEP_ID}
+	AND		ACTION_SEQ=#{ACTION_SEQ}
+	</update>	
+	
+	<!-- 테스트 실행목록 실행자 삭제 -->
+	<update id="STEP_ACTION_D001" parameterType="hashMap">
+	UPDATE 	STEP_ACTION
+	SET		DEL_FLAG	='Y'
+	WHERE	TEST_ID		=#{TEST_ID}
+	AND 	TESTER_ID	=#{TESTER_ID}
+	AND 	SCENARIO_ID	=#{SCENARIO_ID}
+	AND 	CASE_ID		=#{CASE_ID} 		
+	AND 	STEP_ID		=#{STEP_ID}
+	AND 	DEL_FLAG	='N'
+	AND 	ACTION_SEQ	=#{ACTION_SEQ}
+	</update>
+	
+	<update id="STEP_ACTION_D002" parameterType="hashMap">
+	UPDATE 	STEP_ACTION
+	SET		DEL_FLAG	=#{DEL_FLAG}
+	WHERE	1=1
+			<if test="STEP_ID != null">
+			AND STEP_ID		=#{STEP_ID}		
+			</if>
+			<if test="CASE_ID != null">
+			AND CASE_ID		=#{CASE_ID}
+			</if>
+			<if test="SCENARIO_ID != null">
+			AND SCENARIO_ID	=#{SCENARIO_ID}
+			</if>
+			<if test="ACTION_SEQ != null">
+			AND 	ACTION_SEQ	=#{ACTION_SEQ}
+			</if>
+	AND		TEST_ID		=#{TEST_ID}
+	AND 	TESTER_ID	=#{TESTER_ID}
+	</update>
+</mapper>

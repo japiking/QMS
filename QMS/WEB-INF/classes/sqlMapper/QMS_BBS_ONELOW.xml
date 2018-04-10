@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_BBS_ONELOW">
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<result property="SEQ"            column="SEQ"			javaType="String" /> 
+		<result property="DEPTH"          column="DEPTH"		javaType="String" /> 
+		<result property="CONTENTS"       column="CONTENTS"		javaType="String" /> 
+		<result property="BBS_REG_DATE"   column="BBS_REG_DATE" javaType="String" /> 
+		<result property="COUNT"          column="COUNT"      	javaType="String" /> 
+		<result property="FILE_INFO"      column="FILE_INFO"    javaType="String" />
+	</resultMap>
+	
+	<!-- 한줄게시판 조회 -->
+	<select id="BOARD_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT  INN.ROW_SEQ,																		                                         
+		        INN.BOARD_ID,                                                                                                              
+		        INN.BBS_ID,                                                                                                                
+		        INN.SEQ,                                                                                                                   
+		        INN.DEPTH,                                                                                                                 
+		        INN.TITLE,                                                                                                                 
+		        INN.CONTENTS,                                                                                                              
+		        INN.BBS_USER,                                                                                                              
+		        INN.BBS_REG_DATE,                                                                                                          
+		        COALESCE(INN.BBS_FILE, 'N') AS BBS_FILE,									  		                                         
+		        INN.COUNT,                                                                                                                 
+		        INN.USERNAME,                                                                                                              
+		        INN.RECIPIENT_DVD
+		FROM (SELECT ROW_NUMBER() OVER () as ROW_SEQ, INNER_TABLE.*                                             
+		      FROM (                                                                                                                         
+		          SELECT B.*, C.USERNAME, A.RECIPIENT_DVD                                                                                    
+		          FROM   BBS_RECIPIENT A, BOARD B, USERINFO C                                                                                
+		          WHERE  A.PROJECT_ID   = #{PROJECT_ID} 			                                                                                     
+		          AND    A.BOARD_ID     = #{BOARD_ID} 			                                                                                     
+		          AND    A.RECIPIENT_ID = #{RECIPIENT_ID} 		                                                                                         
+		          AND    A.BBS_ID       = B.BBS_ID                                                                                           
+		          AND    B.BBS_USER     = C.USERID                                                                                           
+		          AND    B.DEL_YN		= 'N'                                                                                                      	 
+		          ORDER BY B.SEQ DESC, B.DEPTH ASC                                                                                           
+		      ) INNER_TABLE                                                                                                                  
+		      WHERE BOARD_ID = #{BOARD_ID} 			                                                                                                 
+		) INN                                                                                                                      					 
+		WHERE  ROW_SEQ BETWEEN ${FROMCNT} AND ${TOCNT}                                                                                                      
+		ORDER BY INN.SEQ DESC                                                                   
+	</select>
+	
+	<!-- 한줄게시판 건수조회 -->
+	<select id="BOARD_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+        SELECT COUNT(A.BBS_ID) AS COUNT 	
+		FROM   BBS_RECIPIENT A, BOARD B	
+		WHERE  A.PROJECT_ID   = #{PROJECT_ID}			
+		AND    A.BOARD_ID     = #{BOARD_ID}			
+		AND    A.RECIPIENT_ID = #{RECIPIENT_ID}			
+		AND    A.BBS_ID       = B.BBS_ID                                             
+	</select>
+	
+	<!-- 게시물에 해당하는 사용자 정보 불러오기 -->
+	<select id="BBS_RECIPIENT_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+        SELECT B.USERNAME ||'(' || A.RECIPIENT_ID || ')' AS NAME	
+		FROM   BBS_RECIPIENT A, USERINFO B							
+		WHERE  A.PROJECT_ID = #{PROJECT_ID}				
+		AND    A.BOARD_ID   = #{BOARD_ID}				
+		AND    A.BBS_ID     = #{BBS_ID}				
+		AND    A.RECIPIENT_DVD = 'R'		
+		AND    A.RECIPIENT_ID = B.USERID	                                             
+	</select>
+	
+	<select id="BBS_ATTACHMENT_R004" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT A.FILE_PATH ||'/'|| A.FILE_NAME AS  FILE_INFO	
+		FROM   BBS_ATTACHMENT A						
+		WHERE  A.BBS_ID = #{BBS_ID}
+		AND DEL_FLAG='N'									
+		ORDER BY  A.SEQ											
+	</select>
+	
+	<!-- 한줄게시판 건수조회 -->
+	<select id="USERINFO_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT	A.USERID, B.USERNAME 			
+		FROM	PROJECTUSERINFO A, USERINFO B	
+		WHERE	A.PROJECTID	=	#{PROJECTID}
+		<if test="USERID != null">					
+ 			AND		A.USERID	!=	#{USERID}
+ 		</if>			 
+		AND		A.USERID	=	B.USERID				                                            
+	</select>
+	
+	<!-- sql2 한줄게시판 받는사람 테이블에 테이블 정보와 사용자 등록 -->
+	<insert id="BBS_ATTACHMENT_C005" parameterType="hashMap">
+	    INSERT INTO BBS_ATTACHMENT (
+	    	BBS_ID
+	    ,	SEQ
+	    ,	FILE_NAME
+	    ,	FILE_PATH
+	    ,	DEL_FLAG
+	    ) VALUES (
+			#{BBS_ID}
+		,	#{SEQ}
+		,	#{FILE_NAME}
+		,	#{FILE_PATH}
+		,	'N'
+		)
+	</insert>
+	
+	<!-- sql2 한줄게시판 받는사람 테이블에 테이블 정보와 사용자 등록 -->
+	<insert id="BBS_RECIPIENT_C006" parameterType="hashMap">
+	   	INSERT INTO BBS_RECIPIENT (
+	   		PROJECT_ID
+	   	,	BOARD_ID
+	   	,	BBS_ID
+	   	,	RECIPIENT_ID
+	   	,	RECIPIENT_SEQ
+	   	,	RECIPIENT_DVD
+	   	) VALUES (
+	   		#{PROJECT_ID}
+	   	,	#{BOARD_ID}
+	   	,	#{BBS_ID}
+	   	,	#{RECIPIENT_ID}
+	   	,	TRIM(CHAR(NEXT VALUE FOR RECIPIENT_SEQ))
+	   	,	#{RECIPIENT_DVD}
+	   	)													
+	</insert>
+	
+	<!-- sql3 한줄게시판에 내용등록 -->
+	<insert id="BOARD_C007" parameterType="hashMap">
+		insert into BOARD (									       
+				BOARD_ID
+			,	BBS_ID
+			,	SEQ
+			,	DEPTH
+			,	TITLE
+			,	CONTENTS
+			,	BBS_USER
+			,	BBS_REG_DATE
+			,	BBS_FILE
+			,	COUNT
+			,	DEL_YN
+			,	BBS_REG_TIME
+		) values (											               
+			 	#{BOARD_ID}													               
+			,	#{BBS_ID}												               
+			,	NEXT VALUE FOR BOARD_SEQ		               
+			,	1 						                             
+			,	#{TITLE}						                             
+			,	#{CONTENTS} 					                               
+			,	#{BBS_USER} 						                             
+			,	#{BBS_REG_DATE}				                                 
+			,	#{BBS_FILE} 						                             
+			,	0 						              
+			,	'N' 						            
+			, 	CURRENT_TIME
+		) 						  
+	</insert>
+	
+	<!-- 한줄 게시물 수정하기 -->
+	<update id="BOARD_U001" parameterType="hashMap">
+		UPDATE	BOARD 		
+		SET		TITLE		= #{TITLE}
+		,		CONTENTS	= #{CONTENTS} 	
+		,		BBS_FILE	= #{BBS_FILE}
+		<if test="IMPORTANCE_GRADE_ID != null">
+		,		IMPORTANCE_GRADE_ID	=	#{IMPORTANCE_GRADE_ID}
+		</if>
+		<if test="COMPLETION_DATE != null">
+		,		COMPLETION_DATE	=	#{COMPLETION_DATE}
+		</if>
+		<if test="CONFIRM_USER != null">
+		,		CONFIRM_USER	=	#{CONFIRM_USER}
+		</if>  	 	
+		WHERE	1=1
+		AND		BOARD_ID	= #{BOARD_ID} 	
+		AND 	BBS_ID		= #{BBS_ID} 	
+	</update>
+	
+	<!-- 한줄 게시물 지우기 -->
+	<update id="BOARD_U002" parameterType="hashMap">	
+		UPDATE	BOARD 
+		SET 	DEL_YN		= 'Y' 
+		WHERE 	1=1
+		AND		BOARD_ID	= #{BOARD_ID} 
+		AND		BBS_ID 		= #{BBS_ID}
+	</update>
+	
+	<!-- 한줄게시판 공유사용자검색 -->
+	<select id="USERINFO_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT	B.USERID, B.USERNAME 			
+		FROM	PROJECTUSERINFO A, USERINFO B
+		WHERE	A.PROJECTID	= #{PROJECTID}
+		AND     A.USERID    = B.USERID
+		AND		(B.USERID LIKE '%' || #{USERID} || '%' OR B.USERNAME LIKE '%' || #{USERID} || '%')		
+						                                            
+	</select>
+	
+
+<!-- 	
+	Dynamic으로  if else문 처리
+	<select id="TEST_SELECT" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT A.PROJECT_ID, A.KOR_MENU_NAME, A.BOARD_ID, A.AUTHORITYGRADE
+		FROM   MENU A
+		WHERE  1 = 1
+		AND  A.PROJECT_ID = #{PROJECT_ID}
+		<choose>
+			<when test="BOARD_ID == 'BRD_0000000011'">
+			AND  A.BOARD_ID = #{BOARD_ID}
+			</when>
+			<when test="BOARD_ID != null">
+			AND  A.BOARD_ID = #{BOARD_ID}
+			</when>
+			<otherwise>
+			AND A.BOARD_ID = 'BRD_0000000010'
+			</otherwise>
+		</choose>
+		
+	</select>
+	
+	Dynamic으로  if문 처리
+	<select id="TEST_SELECT2" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT A.PROJECT_ID, A.KOR_MENU_NAME, A.BOARD_ID, A.AUTHORITYGRADE
+		FROM   MENU A
+		WHERE  1 = 1
+		<if test="PROJECT_ID != null" >
+			AND  A.PROJECT_ID = #{PROJECT_ID}
+		</if>
+		ORDER  BY A.SORT_SEQ
+	</select>
+	
+	Insert문 예시
+	<update id="TEST_UPDATE" parameterType="hashMap">
+	    UPDATE MENU A
+	    SET    A.KOR_MENU_NAME = '장난아니다'
+	    WHERE  A.BOARD_ID = #{BOARD_ID}
+	</update>
+	
+	Insert문 예시
+	<insert id="TEST_INSERT" parameterType="hashMap">
+	    INSERT INTO DUAL
+	    VALUES('ABCD')
+	</insert> -->
+</mapper>

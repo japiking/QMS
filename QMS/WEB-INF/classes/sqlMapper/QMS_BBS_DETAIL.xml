@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_BBS_DETAIL">
+	<!--resultMap--> 
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<result property="COMPLETION_DATE"          column="COMPLETION_DATE"    javaType="String"	/> 
+		<result property="SEQ"            			column="SEQ"      			javaType="String"	/> 
+		<result property="DEPTH"           			column="DEPTH"      		javaType="String"	/>
+		<result property="COUNT"					column="COUNT"				javaType="String"	/>
+		<result property="CONTENTS"					column="CONTENTS"			javaType="String"	/>
+		<result property="COMMENT_REG_DATE"			column="COMMENT_REG_DATE"	javaType="String"	/>
+		<result property="CURRENT_DATE"				column="CURRENT_DATE"		javaType="String"	/>
+	</resultMap>
+	
+	<!-- 게시글 조회 -->
+	<select id="BOARD_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT	A.*, B.USERNAME, C.USERNAME AS CONFIRM_NM
+		FROM	BOARD A, USERINFO B, USERINFO C
+		WHERE	COALESCE(DEL_YN, 'N') != 'Y'
+		AND		A.BBS_USER	= B.USERID
+		AND		A.CONFIRM_USER	= C.USERID
+		AND		BOARD_ID	= #{BOARD_ID}
+		AND		BBS_ID		= #{BBS_ID}
+		AND		SEQ			= #{SEQ}
+		AND		DEPTH		= #{DEPTH}
+	</select>
+	
+	<!-- 공지게시글 조회 -->
+	<select id="BOARD_R004" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT	A.*, B.USERNAME 
+		FROM	BOARD A, USERINFO B
+		WHERE	COALESCE(DEL_YN, 'N') != 'Y'
+		AND		A.BBS_USER	= B.USERID
+		AND		BOARD_ID	= #{BOARD_ID}
+		AND		BBS_ID		= #{BBS_ID}
+		AND		SEQ			= #{SEQ}
+		AND		DEPTH		= #{DEPTH}
+	</select>
+		
+	<!-- 댓글 조회 -->
+	<select id="BOARD_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT	A.BBS_ID, A.COMMENT_ID, A.SEQ, A.CONTENTS, A.COMMENT_REG_DATE, A.COMMENT_USER, B.USERNAME, A.COMMENT_REG_DATE,B.USERID
+		FROM	BBS_COMMENT A, USERINFO B
+		WHERE 	COALESCE(A.DEL_YN, 'N') != 'Y'
+		AND		A.COMMENT_USER = B.USERID
+		AND		A.BBS_ID = #{BBS_ID}
+		ORDER BY SEQ
+	</select>
+	
+	<!-- 첨부파일 조회 -->
+	<select id="BOARD_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT A.BBS_ID, A.FILE_NAME, A.FILE_PATH, A.SEQ
+		FROM   BBS_ATTACHMENT A
+		WHERE  A.BBS_ID = #{BBS_ID}
+		AND DEL_FLAG = 'N'
+	</select>
+	
+	<!-- 조회수 증가 -->
+	<update id="BOARD_U001" parameterType="hashMap">
+		UPDATE BOARD					
+		SET	COUNT 		= COUNT +1				
+		WHERE COALESCE(DEL_YN, 'N') != 'Y'	
+		AND BOARD_ID 	= #{BOARD_ID}
+		AND BBS_ID 		= #{BBS_ID}
+		AND SEQ 		= #{SEQ}
+		AND DEPTH 		= #{DEPTH}
+	</update>
+	
+	<!-- 게시물지우기 -->
+	<update id="BOARD_U002" parameterType="hashMap">
+		UPDATE	BOARD					
+		SET		DEL_YN = 'Y' 			
+		WHERE	1=1	
+		AND BOARD_ID 	= #{BOARD_ID}
+		AND BBS_ID 		= #{BBS_ID}
+		AND SEQ 		= #{SEQ}
+		AND DEPTH 		= #{DEPTH}
+	</update>
+	
+	<!-- 댓글 내용 저장 -->
+	<insert id="BBS_COMMENT_C001" parameterType="hashMap">
+		INSERT INTO BBS_COMMENT (				
+		  BBS_ID 								
+		, COMMENT_ID							
+		, SEQ									
+		, CONTENTS								
+		, COMMENT_REG_DATE						
+		, COMMENT_USER							
+		, DEL_YN								
+		) VALUES ( 								
+		  #{BBS_ID}
+		, #{COMMENT_ID}
+		, NEXT VALUE FOR BBS_CMT_SEQ2
+		, #{CONTENTS}
+		, CURRENT_DATE||' '||CURRENT_TIME					
+		, #{COMMENT_USER}
+		, 'N'
+		)	
+	</insert>
+	
+	<!-- 코멘트삭제 -->
+	<update id="BBS_COMMENT_U002" parameterType="hashMap">
+		UPDATE BBS_COMMENT					
+		SET DEL_YN = 'Y'		
+		WHERE BBS_ID 	= #{BBS_ID}
+		AND COMMENT_ID 	= #{COMMENT_ID}
+	</update>
+	
+	<!-- 댓글지우기 -->
+	<update id="BBS_COMMENT_U003" parameterType="hashMap">
+		UPDATE BBS_COMMENT 
+		SET DEL_YN 	= 'Y' 
+		WHERE 1=1 
+		AND BBS_ID	= #{BBS_ID}
+	</update>
+	
+</mapper>

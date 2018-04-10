@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_CODELIST">
+	
+<!-- ================================ -->
+<!--    코드목록    -->
+<!-- ================================ -->
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<!-- 날짜 및 int 타입의 데이터는 String으로 형변환 함. -->
+		
+	</resultMap>
+	
+	<!-- 실행에 대한 테스트ID 목록 -->
+	<select id="STEP_ACTION_R001" resultType="HashMap"  resultMap="QUERY_RESULT">
+	SELECT DISTINCT S.TEST_ID AS ID,
+				 	T.TEST_NM AS NM
+	FROM  STEP_ACTION S, TEST_MANAGEMENT T
+	WHERE S.TEST_ID = T.TEST_ID
+		AND S.PROJECT_ID=#{PROJECT_ID}
+		AND S.TESTER_ID = #{TESTER_ID}
+		AND S.DEL_FLAG='N'
+		AND T.DEL_FLAG='N'
+	</select>
+	
+	<!-- 실행에 대한 시나리오ID 목록 -->
+	<select id="STEP_ACTION_R002" resultType="HashMap"  resultMap="QUERY_RESULT">
+	SELECT DISTINCT S.SCENARIO_ID AS ID,
+					C.SCENARIO_NM AS NM
+	FROM STEP_ACTION S, SCENARIO C
+	WHERE S.SCENARIO_ID = C.SCENARIO_ID
+		AND S.PROJECT_ID=#{PROJECT_ID}
+		AND S.TESTER_ID = #{TESTER_ID}
+		AND S.DEL_FLAG='N'
+		AND C.DEL_FLAG='N'
+	<if test="TEST_ID != null">
+		AND S.TEST_ID=#{TEST_ID}
+	</if>
+	</select>
+	
+	<!-- 실행에 대한 케이스ID 목록 -->
+	<select id="STEP_ACTION_R003" resultType="HashMap"  resultMap="QUERY_RESULT">
+	SELECT DISTINCT S.CASE_ID AS ID,
+					C.CASE_NM AS NM
+	FROM STEP_ACTION S, CIRCUMSTANCE C
+	WHERE S.CASE_ID = C.CASE_ID
+		AND S.PROJECT_ID=#{PROJECT_ID}
+		AND S.TESTER_ID = #{TESTER_ID}
+		AND S.DEL_FLAG='N'
+		AND C.DEL_FLAG='N'
+	<if test="TEST_ID != null and SCENARIO_ID != null">
+		AND S.TEST_ID=#{TEST_ID}
+		AND S.SCENARIO_ID=#{SCENARIO_ID}
+	</if>
+	</select>
+	
+	<!-- 실행에 대한 스텝ID 목록 -->
+	<select id="STEP_ACTION_R004" resultType="HashMap"  resultMap="QUERY_RESULT">
+	SELECT DISTINCT S.STEP_ID AS ID,
+					P.STEP_NM AS NM
+	FROM STEP_ACTION S, STEP P
+	WHERE S.STEP_ID = P.STEP_ID
+		AND S.PROJECT_ID=#{PROJECT_ID}
+		AND S.TESTER_ID = #{TESTER_ID}
+		AND S.DEL_FLAG='N'
+		AND P.DEL_FLAG='N'
+	<if test="TEST_ID != null and SCENARIO_ID != null and CASE_ID != null">
+		AND S.TEST_ID=#{TEST_ID}
+		AND S.SCENARIO_ID=#{SCENARIO_ID}
+		AND S.CASE_ID=#{CASE_ID} 
+	</if>
+	</select>
+	
+	<!-- 상태코드 -->
+	<select id="DEFECT_STATUS_R001" resultType="HashMap"  resultMap="QUERY_RESULT">
+	SELECT DEFECT_STATUS_ID AS ID, DEFECT_STATUS_NM AS NM
+	FROM DEFECT_STATUS
+	
+	</select>
+	
+	<!-- 프로젝트에 대한 사용자 리스트 -->
+	<select id="PROJECTUSERINFO_R001" resultType="HashMap"  resultMap="QUERY_RESULT">
+	SELECT P.USERID AS ID,
+		 U.USERNAME AS NM
+	FROM PROJECTUSERINFO P, USERINFO U
+	WHERE  P.USERID = U.USERID
+		AND P.PROJECTID = #{PROJECT_ID}
+		AND P.AUTHORITYGRADE !='99'
+	</select>
+</mapper>

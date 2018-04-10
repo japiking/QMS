@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_BBS_ISSU">
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<result property="ROW_SEQ" 				column="ROW_SEQ" 				javaType="String"/>
+		<result property="SEQ" 					column="SEQ" 					javaType="String"/>
+		<result property="DEPTH" 				column="DEPTH" 					javaType="String"/>
+		<result property="CONTENTS" 			column="CONTENTS" 				javaType="String"/>
+		<result property="BBS_REG_DATE" 		column="BBS_REG_DATE" 			javaType="String"/>
+		<result property="COMPLETION_DATE" 		column="COMPLETION_DATE" 		javaType="String"/>
+		<result property="IMPORTANCE_GRADE_ID" 	column="IMPORTANCE_GRADE_ID" 	javaType="String"/>
+		<result property="COUNT" 				column="COUNT" 					javaType="String"/>
+		<result property="COMMENT_REG_DATE" 	column="COMMENT_REG_DATE" 		javaType="String"/>
+	</resultMap>
+	
+	<!-- 이슈게시판 리스트 가져오기 -->
+	<select id="BOARD_R001" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT  INN.ROW_SEQ,
+				INN.BOARD_ID,
+				INN.BBS_ID,
+				INN.SEQ,
+				INN.DEPTH,
+				INN.TITLE,                                
+				INN.BBS_USER,                             
+				INN.BBS_REG_DATE,                         
+				INN.COMPLETION_DATE,                      
+				INN.IMPORTANCE_GRADE_ID,                  
+				INN.STATE,                                
+				COALESCE(INN.BBS_FILE, 'N') AS BBS_FILE,	
+				INN.COUNT,                                
+				INN.USERNAME,                             
+				D.KR_IMPORTANCE_GRADE,                    
+				INN.COMPLETE_DATE,
+				INN.CONFIRM_NM,
+				INN.CONFIRM_USER
+				FROM (SELECT ROW_NUMBER() OVER () as ROW_SEQ, INNER_TABLE.*
+				      	FROM (                                               
+					          SELECT DISTINCT B.SEQ,
+                                              B.BOARD_ID,
+                                              B.BBS_ID,
+                                              B.DEPTH,
+                                              B.TITLE,                                                     
+                                              B.BBS_USER,                             
+                                              B.BBS_REG_DATE,                         
+                                              B.COMPLETION_DATE,                      
+                                              B.IMPORTANCE_GRADE_ID,                  
+                                              B.STATE,                                
+                                              B.BBS_FILE,
+                                              B.COUNT,
+                                              B.DEL_YN,
+                                              B.COMPLETE_DATE,
+                                              C.USERNAME,
+                                              U.USERNAME AS CONFIRM_NM,
+                                              B.CONFIRM_USER       
+					          FROM   BBS_RECIPIENT A, BOARD B, USERINFO C, USERINFO U       
+					          WHERE  A.PROJECT_ID   = #{PROJECT_ID} 			           
+					          AND    A.BOARD_ID     = #{BOARD_ID} 			           
+					          AND    A.RECIPIENT_ID = #{RECIPIENT_ID} 		               
+					          AND    A.BBS_ID       = B.BBS_ID                 
+					          AND    B.BBS_USER     = C.USERID
+					          AND    B.CONFIRM_USER = U.USERID                 
+					          ORDER BY B.SEQ DESC, B.DEPTH ASC                 
+						      ) INNER_TABLE                                        
+						      WHERE BOARD_ID = #{BOARD_ID} AND DEL_YN='N' 			                       
+					) INN, IMPORTANCE_GRADE D                                  
+					WHERE ROW_SEQ BETWEEN #{START} AND #{END}                              
+					AND   INN.IMPORTANCE_GRADE_ID = D.IMPORTANCE_GRADE_ID      
+					ORDER BY INN.SEQ DESC                                                             
+	</select>
+	
+	<!-- 이슈게시판리스트 카운트 -->
+	<select id="BOARD_R002" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT COUNT(*) COUNT
+        FROM  BOARD
+        WHERE BOARD_ID = #{BOARD_ID}   
+        AND     DEL_YN = 'N'
+	</select>
+	
+	<!-- 등급 코드값-->
+	<select id="IMPORTANCE_GRADE" resultType="hashMap">
+		SELECT IMPORTANCE_GRADE_ID,KR_IMPORTANCE_GRADE
+		FROM IMPORTANCE_GRADE
+	</select>
+	
+	<!-- 받는사용자 파일 -->
+	<select id="BBS_RECIPIENT_R001" resultType="hashMap">
+		<!-- SELECT B.USERNAME ||'(' || A.RECIPIENT_ID || ')' AS NAME  -->
+		SELECT B.USERNAME || '' AS NAME, A.RECIPIENT_ID, A.PROC_YN,A.REC_YN
+		FROM   BBS_RECIPIENT A, USERINFO B
+		WHERE  A.RECIPIENT_ID = B.USERID
+			AND	A.PROJECT_ID = #{PROJECT_ID}
+			AND A.BOARD_ID   = #{BOARD_ID}
+			AND A.BBS_ID     = #{BBS_ID}
+<!-- 		AND    A.RECIPIENT_DVD = 'R' -->
+	</select>
+	
+	<!-- 보낸는사람 관련정보 입력 -->
+	<insert id="BBS_RECIPIENT_C003">
+		INSERT INTO BBS_RECIPIENT(
+								PROJECT_ID,
+								BOARD_ID,
+								BBS_ID,
+								RECIPIENT_ID,
+								RECIPIENT_SEQ,
+								RECIPIENT_DVD
+								) 
+					VALUES (
+							#{PROJECT_ID},
+							#{BOARD_ID},
+							#{BBS_ID},
+							#{RECIPIENT_ID},
+							TRIM(CHAR(NEXT VALUE FOR RECIPIENT_SEQ)),
+							#{RECIPIENT_DVD}
+							)
+	</insert>
+	
+	<!-- 받는사람관련정보 입력 -->
+	<insert id="BBS_RECIPIENT_C001">
+		INSERT INTO BBS_RECIPIENT(
+								PROJECT_ID,
+								BOARD_ID,
+								BBS_ID,
+								RECIPIENT_ID,
+								RECIPIENT_SEQ,
+								RECIPIENT_DVD,
+								REC_YN
+								) 
+					VALUES (
+							#{PROJECT_ID},
+							#{BOARD_ID},
+							#{BBS_ID},
+							#{RECIPIENT_ID},
+							TRIM(CHAR(NEXT VALUE FOR RECIPIENT_SEQ)),
+							#{RECIPIENT_DVD},
+							#{REC_YN}
+							)
+	</insert>
+	
+	<!-- 보낸는사람/받는사람관련정보 입력 -->
+	<insert id="BBS_RECIPIENT_C002">
+		INSERT INTO BBS_RECIPIENT(
+								PROJECT_ID,
+								BOARD_ID,
+								BBS_ID,
+								RECIPIENT_ID,
+								RECIPIENT_SEQ,
+								RECIPIENT_DVD,
+								PROC_YN
+								)
+					VALUES (
+							#{PROJECT_ID},
+							#{BOARD_ID},
+							#{BBS_ID},
+							#{RECIPIENT_ID},
+							TRIM(CHAR(NEXT VALUE FOR RECIPIENT_SEQ)),
+							#{RECIPIENT_DVD},
+							#{PROC_YN}
+							)
+	</insert>
+	
+	<!-- 이슈글 쓰기 -->
+	<insert id="BOARD_C001">
+		INSERT INTO BOARD (
+							BOARD_ID,
+							BBS_ID,
+							SEQ,
+							DEPTH,
+							TITLE,
+							CONTENTS,
+							BBS_USER,
+							BBS_REG_DATE,
+							COMPLETION_DATE,
+							BBS_FILE,
+							COUNT,
+							DEL_YN,
+							STATE,
+							IMPORTANCE_GRADE_ID,
+							BBS_REG_TIME,
+							CONFIRM_USER
+						  )
+					VALUES(
+							#{BOARD_ID},
+							#{BBS_ID},
+							NEXT VALUE FOR BOARD_SEQ,
+							#{DEPTH},
+							#{TITLE},
+							#{CONTENTS},
+							#{BBS_USER},
+							#{BBS_REG_DATE},
+							#{COMPLETION_DATE},
+							#{BBS_FILE},
+							#{COUNT},
+							#{DEL_YN},
+							#{STATE},
+							#{IMPORTANCE_GRADE_ID},
+							CURRENT_TIME,
+							#{CONFIRM_USER}
+							)
+	</insert>
+	
+	<!--이슈글 히스토리 페이지  -->
+	<select id="BOARD_R003" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT	A.BOARD_ID,
+				A.BBS_ID,
+				A.SEQ,
+				A.DEPTH,
+				A.TITLE,
+				A.CONTENTS,
+				A.BBS_USER,
+				A.BBS_REG_DATE,
+				A.BBS_FILE,
+				A.COUNT,
+				A.STATE,
+				A.COMPLETION_DATE,
+				A.COMPLETE_DATE,
+				A.STATE,
+				B.USERNAME
+		FROM	BOARD A, USERINFO B
+		WHERE	COALESCE(DEL_YN, 'N') != 'Y'
+		AND	A.BBS_USER = B.USERID
+		AND	A.BOARD_ID = #{BOARD_ID}
+		AND	A.BBS_ID = #{BBS_ID}
+		AND	A.SEQ = #{SEQ}
+	</select>
+	
+	<!-- 이슈게시글조회 -->
+	<select id="BBS_COMMENT_R001" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT	A.BBS_ID,
+				A.COMMENT_ID,
+				A.SEQ,
+				A.CONTENTS,
+				A.COMMENT_REG_DATE,
+				B.USERNAME,
+				B.USERID
+		FROM	BBS_COMMENT A, USERINFO B
+		WHERE 	COALESCE(A.DEL_YN, 'N') != 'Y'
+				AND	A.COMMENT_USER = B.USERID
+		<if test="BBS_ID != null">
+				AND	A.BBS_ID = #{BBS_ID}
+		</if>
+		ORDER BY SEQ	
+	</select>
+	
+	<!--댓글조회  -->
+	<select id="BBS_ATTACHMENT_R001" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT A.BBS_ID, A.FILE_NAME, A.FILE_PATH, A.SEQ
+		FROM   BBS_ATTACHMENT A
+		WHERE  A.BBS_ID = #{BBS_ID}
+		AND DEL_FLAG = 'N'
+	</select>
+	
+	<!-- 상태값 변경 -->
+	<update id="BOARD_U001">
+		UPDATE BOARD
+		SET STATE=#{STATE}
+		WHERE BOARD_ID=#{BOARD_ID} AND BBS_ID=#{BBS_ID} AND SEQ=#{SEQ}
+	</update> 
+	<!-- 상태값 변경 -->
+	<update id="BOARD_U002">
+		UPDATE BOARD
+		SET STATE=#{STATE}
+			, COMPLETE_DATE = CURRENT_DATE
+			, COMPLETE_TIME = CURRENT_TIME
+		WHERE BOARD_ID=#{BOARD_ID} AND BBS_ID=#{BBS_ID} AND SEQ=#{SEQ}
+	</update>
+	
+	<!-- 이슈게시판 참조자/처리자 삭제 -->
+	<delete id="BBS_RECIPIENT_D001">
+		DELETE 
+		FROM BBS_RECIPIENT
+		WHERE PROJECT_ID=#{PROJECT_ID}
+        AND BOARD_ID=#{BOARD_ID}
+        AND BBS_ID=#{BBS_ID}
+	</delete>
+	
+	<!-- 이슈게시판 처리자 조회 -->
+	<select id="BBS_RECIPIENT_R002" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT A.*, B.USERNAME,B.USERID
+        FROM BBS_RECIPIENT A, USERINFO B
+        where A.BBS_ID=#{BBS_ID}
+        AND   A.RECIPIENT_ID = B.USERID
+	</select>
+	
+	<!-- 이슈사항 확인자 리스트 조회   -->
+	<select id="USERINFO_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+		    SELECT	A.USERID, A.USERNAME
+            FROM 	USERINFO A, PROJECTUSERINFO B
+            WHERE   A.USERID = B.USERID
+            AND     B.PROJECTID = #{PROJECTID}
+            AND		B.AUTHORITYGRADE = '01'
+	</select>
+</mapper>

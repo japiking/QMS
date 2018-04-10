@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_BBS_NOTICE">
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<result property="SEQ"            column="SEQ"			javaType="String" /> 
+		<result property="DEPTH"          column="DEPTH"		javaType="String" /> 
+		<result property="CONTENTS"       column="CONTENTS"		javaType="String" /> 
+		<result property="BBS_REG_DATE"   column="BBS_REG_DATE" javaType="String" /> 
+		<result property="COUNT"          column="COUNT"      	javaType="String" />
+		<result property="TITLE"          column="TITLE"      	javaType="String" />  
+	</resultMap>
+	
+	<!-- 단순 SELECT -->
+	<select id="BOARD_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT A.CHANEL_NAME, A.DEPTH, A.TITLE, A.CONTENTS, A.BBS_USER, A.BBS_REG_DATE , A.BBS_FILE, A.COUNT, A.STATE, B.USERNAME 	
+		FROM BOARD A, USERINFO B  														
+		WHERE A.BBS_USER	= B.USERID  														
+		AND A.BOARD_ID		= #{BOARD_ID}
+		AND A.BBS_ID		= #{BBS_ID}
+		AND A.SEQ			= #{SEQ}								
+	</select>
+	
+	<select id="BOARD_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+		SELECT A.CHANEL_NAME, A.DEPTH, A.TITLE, A.CONTENTS, A.BBS_USER, A.BBS_REG_DATE , A.BBS_FILE, A.COUNT, A.STATE, B.USERNAME 	
+		FROM BOARD A, USERINFO B  														
+		WHERE A.BBS_USER	= B.USERID  														
+		AND A.BOARD_ID		= #{BOARD_ID}
+		AND A.BBS_ID		= #{BBS_ID}
+		AND A.SEQ			= #{SEQ}								
+	</select>
+	
+	<!-- 업로드파일정보  -->
+	<insert id="BBS_ATTACHMENT_C001" parameterType="hashMap">
+	    INSERT INTO BBS_ATTACHMENT(
+	    		BBS_ID 
+	    	,	SEQ 
+	    	,	FILE_NAME 
+	    	,	FILE_PATH
+	    	,	DEL_FLAG
+	    ) VALUES (															
+				#{BBS_ID}															
+			,	(SELECT COALESCE(MAX(SEQ),0)+1  FROM BBS_ATTACHMENT WHERE BBS_ID = #{BBS_ID})
+			,	#{FILE_NAME}																	
+			,	#{FILE_PATH}
+			,	'N'																	
+		)																	
+	</insert>
+	<!-- 공지사항 작성 -->
+	<insert id="BBS_BOARD_C002">
+		INSERT INTO BOARD (
+				BOARD_ID
+			,	BBS_ID
+			,	SEQ
+			,	DEPTH
+			,	TITLE
+			,	CONTENTS
+			,	BBS_USER
+			,	BBS_REG_DATE
+			,	BBS_FILE
+			,	COUNT
+			,	DEL_YN
+		) VALUES (
+			 	#{BOARD_ID}
+			,	#{BBS_ID}	
+			,	NEXT VALUE FOR BOARD_SEQ
+			,	#{DEPTH}
+			,	#{REG_TITLE}
+			,	#{REG_TEXT}
+			,	#{BBS_USER}
+			,	#{REG_DATE}
+			,	#{BBS_FILE}
+			,	#{COUNT}
+			,	#{DEL_YN}
+		)
+	</insert>
+	
+	<!-- 공지사항 게시글 가져오기  -->
+	<select id="BOARD_R003" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT 	A.CHANEL_NAME,
+				A.DEPTH,
+				A.TITLE,
+				A.CONTENTS,
+				A.BBS_USER,
+				A.BBS_REG_DATE,
+				A.BBS_FILE,
+				A.COUNT,
+				A.STATE,
+				B.USERNAME
+		FROM BOARD A, USERINFO B
+		WHERE A.BBS_USER=B.USERID
+		AND A.BOARD_ID=#{BOARD_ID} AND A.BBS_ID=#{BBS_ID} AND A.SEQ=#{SEQ}
+	</select>
+	
+	<!-- 게시글파일업로드된 정보 -->
+	<select id="BBS_ATTACHMENT_R001" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT BBS_ID, FILE_NAME, FILE_PATH, SEQ
+		FROM   BBS_ATTACHMENT
+		WHERE  BBS_ID = #{BBS_ID}
+		AND	   DEL_FLAG = 'N'
+	</select>
+	
+	<!-- 공지사항게시판 수정 -->
+	<update id="BOARD_U001">
+		UPDATE BOARD
+		SET TITLE=#{TITLE}, CONTENTS=#{CONTENTS}, BBS_FILE=#{BBS_FILE}
+		WHERE BOARD_ID=#{BOARD_ID} AND BBS_ID=#{BBS_ID} AND SEQ=#{SEQ}
+	</update>
+	
+	<!-- 업로드한 파일정보 삭제 -->
+	<delete id="BBS_ATTACHMENT_D001">
+		DELETE FROM BBS_ATTACHMENT
+		WHERE BBS_ID = #{BBS_ID}
+	</delete>
+	
+	
+</mapper>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_LOGIN">
+	
+<!-- ================================ -->
+<!--    로그인 QUERY    -->
+<!-- ================================ -->
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<!-- 날짜 및 int 타입의 데이터는 String으로 형변환 함. -->
+		<result property="BIRTHDATE"      	column="BIRTHDATE"  	javaType="String" /> 
+		<result property="CNT"      		column="CNT"    		javaType="String" /> 
+		<result property="SORT_SEQ"      	column="SORT_SEQ"    	javaType="String" /> 
+		<result property="MENU_REG_DATE"    column="MENU_REG_DATE"  javaType="String" /> 
+	</resultMap>
+	<!-- 사용자정보 조회 -->
+	<select id="USERINFO_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT USERID, USERPASSWORD, BIRTHDATE, MANAGEMENTGRADE, USERIP, BIGO, USERNAME
+	    FROM USERINFO
+	    WHERE UserID = #{USER_ID}
+	    AND UserPassword = #{USER_PASSWORD}
+	</select>
+	
+	<!-- 프로젝트 정보조회 -->
+	<select id="PROJECTINFO_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT a.PROJECTID, a.PROJECTNAME, a.PROJECTSTARTDATE, a.PROJECTENDDATE, a.PROJECTMANAGERID, b.AUTHORITYGRADE, b.ASSIGNMENTTASK, b.ASSIGNMENTTASKDETAIL
+	    FROM PROJECTINFO a, PROJECTUSERINFO b
+	    WHERE a.PROJECTID = b.PROJECTID
+	    AND b.USERID = #{USER_ID}
+	</select>
+	
+	<!-- 출석정보조회 -->
+	<select id="ATTENTIONMANAGER_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT COUNT(A.USERID) AS CNT
+	    FROM   ATTENTIONMANAGER	A
+	    WHERE  A.USERID = #{USER_ID} 
+	    AND    ATTENTION_DATE = CURRENT_DATE
+	</select>
+	
+	<!-- 출석정보입력 -->
+	<insert id="ATTENTIONMANAGER_C001" parameterType="hashMap">
+	    INSERT INTO	ATTENTIONMANAGER
+	    VALUES(
+	    	#{USER_ID},
+	    	CURRENT_DATE,
+	    	#{LGN_TIME},
+	    	''
+	    )
+	</insert>
+	
+	<!-- 퇴근정보입력 -->
+	<insert id="ATTENTIONMANAGER_U001" parameterType="hashMap">
+	    UPDATE ATTENTIONMANAGER
+	    SET    OUT_TIME = #{LGN_TIME}
+	    WHERE  USERID   = #{USER_ID}
+	    AND    ATTENTION_DATE = CURRENT_DATE
+	</insert>
+	
+	<!-- 메뉴정보로드 -->
+	<select id="MENU_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT A.PROJECT_ID, A.BOARD_ID, A.SORT_SEQ, A.KOR_MENU_NAME, A.ENG_MENU_NAME, A.MENU_TYPE_ID, A.MENU_REG_DATE, A.USE_FLAG, B.AUTHORITYGRADE, T.MENU_VIEW
+	    FROM   MENU A, PROJECTUSERINFO B , MENUTYPE T
+        WHERE  A.PROJECT_ID = #{PROJECT_ID}
+        AND    A.PROJECT_ID = B.PROJECTID
+        AND    A.MENU_TYPE_ID = T.MENU_TYPE_ID
+        AND    B.USERID     = #{USERID}
+        AND    A.USE_FLAG = 'Y'
+        AND    A.AUTHORITYGRADE >= B.AUTHORITYGRADE
+        ORDER BY A.SORT_SEQ ASC
+	</select>
+	
+<!-- ================================ -->
+<!--    프로젝트선택 QUERY    -->
+<!-- ================================ -->
+<!-- 프로젝트 사용자 등급 조회 -->
+	<select id="PROJECTUSERINFO_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT A.AUTHORITYGRADE
+	    FROM   PROJECTUSERINFO A
+	    WHERE  A.PROJECTID = #{PROJECT_ID}
+	    AND    A.USERID    = #{USERID}
+	</select>
+<!-- 사용자 update QUERY -->	
+	<select id="USERINFO_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT	USERID,USERNAME,USERIP,USERPASSWORD,BIGO
+	    FROM 	USERINFO
+	    WHERE 	UserID = #{USER_ID}
+	</select>
+	
+	<update id="USERINFO_U001" parameterType="hashMap">
+		UPDATE 	USERINFO
+		SET		USERNAME		=	#{USERNAME},
+				USERPASSWORD	=	#{USERPASSWORD},
+				USERIP			=	#{USERIP},
+				BIGO			=	#{BIGO}
+		WHERE	USERID			=	#{USERID}
+	</update>
+</mapper>

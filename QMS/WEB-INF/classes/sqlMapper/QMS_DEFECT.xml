@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_DEFECT">
+	
+<!-- ================================ -->
+<!--    결함관리    -->
+<!-- ================================ -->
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<!-- 날짜 및 int 타입의 데이터는 String으로 형변환 함. -->
+		<result property="DEFECT_CNTS"	column="DEFECT_CNTS"	javaType="String" />
+		<result property="DEFECT_SEQ"	column="DEFECT_SEQ"		javaType="String" />
+	</resultMap>
+	
+	<!-- 결함 목록 가져오기 -->
+	<select id="DEFECT_MANAGEMENT_R001" resultType="HashMap"  resultMap="QUERY_RESULT">
+		SELECT 	DEFECT_CNTS,
+				DEFECT_SEQ,
+				DEVELOPER_ID,
+				DEFECT_STATUS,
+				MESSENGER,
+				TESTER_ID,
+				TEST_ID,
+				SCENARIO_ID,
+				CASE_ID,
+				STEP_ID,
+				PROJECT_ID,
+				IMPORTANCE,
+				DEFECT_ID,
+				DEL_FLAG,
+				DEFECT_START_DATE,
+				DEFECT_CHECK_DATE,
+				DEFECT_PROCESS_DATE,
+				DEFECT_TITLE
+		FROM DEFECT_MANAGEMENT 
+		WHERE PROJECT_ID=#{PROJECT_ID} AND (TESTER_ID = #{TESTER_ID} OR DEVELOPER_ID = #{DEVELOPER_ID})
+		<if test="TEST_ID != null"> 
+				AND TEST_ID = #{TEST_ID}
+		</if>		
+				AND DEL_FLAG = 'N'
+		ORDER BY DEFECT_START_DATE DESC
+	</select>
+	
+	<!-- 결함등록 -->
+	<insert id="DEFECT_MANAGEMENT_C001">
+		INSERT INTO DEFECT_MANAGEMENT(
+				DEFECT_CNTS,
+				DEFECT_SEQ,
+				DEVELOPER_ID,
+				DEFECT_STATUS,
+				MESSENGER,
+				TESTER_ID,
+				TEST_ID,
+				SCENARIO_ID,
+				CASE_ID,
+				STEP_ID,
+				PROJECT_ID,
+				IMPORTANCE,
+				DEFECT_ID,
+				DEL_FLAG,
+				DEFECT_START_DATE,
+				DEFECT_TITLE
+					)
+		VALUES(
+				#{DEFECT_CNTS},
+				#{DEFECT_SEQ},
+				#{DEVELOPER_ID},
+				#{DEFECT_STATUS},
+				#{MESSENGER},
+				#{TESTER_ID},
+				#{TEST_ID},
+				#{SCENARIO_ID},
+				#{CASE_ID},
+				#{STEP_ID},
+				#{PROJECT_ID},
+				#{IMPORTANCE},
+				#{DEFECT_ID},
+				#{DEL_FLAG},
+				#{DEFECT_START_DATE},
+				#{DEFECT_TITLE}				
+				)			
+	</insert>
+	
+	<!-- 결함seq 생성 -->
+	<select id="DEFECT_SEQ_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT CHAR(NEXT VALUE FOR QMS.DEFECT_SEQ) AS DEFECT_SEQ 
+	    FROM DUAL
+	</select>
+	
+	<!-- 수정 -->
+	<update id="DEFECT_MANAGEMENT_U001">
+	UPDATE  DEFECT_MANAGEMENT
+	SET DEFECT_CNTS = #{DEFECT_CNTS},
+		DEFECT_SEQ = #{DEFECT_SEQ},
+		DEVELOPER_ID = #{DEVELOPER_ID},
+		DEFECT_STATUS = #{DEFECT_STATUS},
+		MESSENGER = #{MESSENGER},
+		IMPORTANCE = #{IMPORTANCE},
+		DEFECT_PROCESS_DATE = #{DEFECT_PROCESS_DATE},
+		DEFECT_CHECK_DATE = #{DEFECT_CHECK_DATE},
+		DEFECT_TITLE = #{DEFECT_TITLE}
+	WHERE PROJECT_ID=#{PROJECT_ID} AND DEFECT_SEQ = #{DEFECT_SEQ} AND (TEST_ID=#{TEST_ID} OR DEVELOPER_ID=#{DEVELOPER_ID}) 
+	</update>
+	
+	<!-- 삭제 -->
+	<update id="DEFECT_MANAGEMENT_D001">
+	UPDATE DEFECT_MANAGEMENT
+	SET DEL_FLAG='Y'
+	WHERE PROJECT_ID=#{PROJECT_ID} 
+		AND TEST_ID = #{TEST_ID}
+		AND DEFECT_ID=#{DEFECT_ID}
+		AND TESTER_ID=#{TESTER_ID}
+	</update>
+	
+</mapper>

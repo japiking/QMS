@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_SEQ_INFO">
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<!-- 날짜 및 int 타입의 데이터는 String으로 형변환 함. -->
+		<result property="PRJ_SEQ"      	column="PRJ_SEQ"   javaType="String" /> 
+		<result property="BRD_SEQ"       	column="BRD_SEQ"   javaType="String" /> 
+		<result property="BBS_SEQ"       	column="BBS_SEQ"   javaType="String" /> 
+		<result property="CMT_SEQ"       	column="CMT_SEQ"   javaType="String" /> 
+	</resultMap>
+	
+	<!-- 새로운 프로젝트 ID SEQ -->
+	<select id="PROJECT_SEQ_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT CHAR(NEXT VALUE FOR PROJECT_SEQ) AS PRJ_SEQ
+	    FROM   DUAL
+	</select>
+	
+	<!-- 게시판(메뉴) ID SEQ -->
+	<select id="BOARDID_SEQ_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT CHAR(NEXT VALUE FOR BOARDID_SEQ) AS BRD_SEQ
+	    FROM   DUAL
+	</select>
+	
+	<!-- 게시물 ID SEQ -->
+	<select id="BBS_NUM_SEQ_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT CHAR(NEXT VALUE FOR BBS_NUM_SEQ) AS BBS_SEQ
+	    FROM   DUAL
+	</select>
+	
+	<!-- 댓글 ID SEQ -->
+	<select id="BBS_CMT_SEQ_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT CHAR(NEXT VALUE FOR BBS_CMT_SEQ) AS CMT_SEQ
+	    FROM   DUAL
+	</select>
+	
+</mapper>

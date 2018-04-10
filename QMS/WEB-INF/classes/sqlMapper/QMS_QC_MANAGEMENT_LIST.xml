@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_QC_MANAGEMENT_LIST">
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<result property="TEST_STTG_DATE"            	column="TEST_STTG_DATE"     javaType="String" />
+		<result property="TEST_ENDG_DATE"            	column="TEST_ENDG_DATE"     javaType="String" />
+		<result property="CNT"            				column="CNT"     			javaType="String" />
+		<result property="TEST_SEQ"            			column="TEST_SEQ"     		javaType="String" />
+		<result property="SCENARIO_SEQ"            		column="SCENARIO_SEQ"     	javaType="String" />
+		<result property="TEST_BIGO"            		column="TEST_BIGO"     		javaType="String" />
+		<result property="START_DATE"					column="START_DATE"			javaType="String" />
+		<result property="END_DATE"						column="END_DATE"			javaType="String" />
+	</resultMap>
+	
+	<!-- TEST목록 -->
+	<select id="TEST_MANAGEMENT_R001" resultType="hashMap" resultMap="QUERY_RESULT">
+	SELECT TEST_ID, PROJECT_ID, TEST_NM, TEST_STTG_DATE, TEST_ENDG_DATE, TEST_BIGO, DEL_FLAG
+	FROM TEST_MANAGEMENT
+	WHERE PROJECT_ID = #{PROJECT_ID} 
+		AND DEL_FLAG='N'
+	ORDER BY TEST_ID ASC
+	</select>
+
+	<!-- 시나리오 목록 -->
+	<select id="SCENARIO_R001" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT SCENARIO_ID, TEST_ID, SCENARIO_NM, START_DATE, END_DATE
+		FROM SCENARIO
+		WHERE PROJECT_ID =#{PROJECT_ID}
+			AND TEST_ID=#{TEST_ID}
+		    AND DEL_FLAG='N'
+		ORDER BY SCENARIO_ID ASC
+	</select>
+		
+	<!-- 케이스 목록 -->
+	<select id="CIRCUMSTANCE_R001" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT CASE_ID, SCENARIO_ID, TEST_ID, CASE_NM, START_DATE, END_DATE
+		FROM CIRCUMSTANCE
+		WHERE PROJECT_ID =#{PROJECT_ID}
+			AND TEST_ID=#{TEST_ID}
+			AND SCENARIO_ID=#{SCENARIO_ID}
+		    AND DEL_FLAG='N'
+		ORDER BY SCENARIO_ID ASC
+	</select>
+	
+	<!-- 시나리오 실행등록 조건검색 -->
+	<select id="STEP_R001" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT 	P.TEST_ID,
+				P.SCENARIO_ID,
+				P.PROJECT_ID,
+				P.CASE_ID,
+				P.STEP_ID
+		FROM STEP AS P,SCENARIO AS S ,CIRCUMSTANCE AS C
+		WHERE S.SCENARIO_ID = C.SCENARIO_ID
+           AND S.TEST_ID = C.TEST_ID
+           AND C.TEST_ID = P.TEST_ID
+           AND C.CASE_ID = P.CASE_ID 
+		   AND P.SCENARIO_ID = #{SCENARIO_ID}
+		   AND P.PROJECT_ID = #{PROJECT_ID}
+		   AND P.TEST_ID = #{TEST_ID}
+		   AND P.DEL_FLAG='N'
+	</select>
+	
+	<!--케이스 실행등록 조회  -->
+	<select id="STEP_R002" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT 	P.TEST_ID,
+				P.SCENARIO_ID,
+				P.PROJECT_ID,
+				P.CASE_ID,
+				P.STEP_ID
+		FROM STEP AS P,SCENARIO AS S ,CIRCUMSTANCE AS C
+		WHERE S.SCENARIO_ID = C.SCENARIO_ID
+           AND S.TEST_ID = C.TEST_ID
+           AND C.TEST_ID = P.TEST_ID
+           AND C.CASE_ID = P.CASE_ID 
+		   AND P.SCENARIO_ID = #{SCENARIO_ID}
+		   AND P.PROJECT_ID = #{PROJECT_ID}
+		   AND P.TEST_ID = #{TEST_ID}
+           AND P.CASE_ID = #{CASE_ID}
+		   AND P.DEL_FLAG='N'
+	</select>
+	
+	<!-- 실행ID SEQ -->
+	<select id="ACTION_SEQ_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT CHAR(NEXT VALUE FOR ACTION_SEQ) AS ACTION_SEQ
+	    FROM   DUAL
+	</select>
+	<!-- 실행등록 -->
+	<insert id="STEP_ACTION_C001">
+		INSERT INTO STEP_ACTION (
+									ACTION_ID,
+									PROJECT_ID,
+									ACTION_SEQ,
+									TEST_ID,
+									SCENARIO_ID,
+									CASE_ID,
+									STEP_ID,
+									TESTER_ID,
+									STEP_STATUS,
+									STATUS_LEVEL,
+									DEL_FLAG,
+									START_DATE
+								)
+		VALUES(
+				#{ACTION_ID},
+				#{PROJECT_ID},
+				#{ACTION_SEQ},
+				#{TEST_ID},
+				#{SCENARIO_ID},
+				#{CASE_ID},
+				#{STEP_ID},
+				#{TESTER_ID},
+				'등록',
+				1,
+				'N',
+				#{START_DATE}
+			)
+	</insert>
+</mapper>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_BBS_WRITE">
+	<!--resultMap--> 
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<result property="BBS_REG_DATE" 	column="BBS_REG_DATE" 	javaType="String"/>
+		<result property="COUNT" 			column="COUNT" 			javaType="String"/>
+		<result property="DEPTH" 			column="DEPTH" 			javaType="String"/>
+		<result property="CONTENTS" 		column="CONTENTS" 		javaType="String"/>
+		<result property="SEQ" 				column="SEQ" 			javaType="String"/>
+	</resultMap>
+	
+	<!-- 수정글 가져오기 -->
+	<select id="BOARD_R001" resultType="hashMap"  resultMap="QUERY_RESULT">
+		SELECT
+			A.*, 
+			B.USERNAME
+		FROM 
+			BOARD A, USERINFO B
+		WHERE 
+			A.BBS_USER = B.USERID
+		AND A.BOARD_ID = #{BOARD_ID} 
+		AND A.BBS_ID = #{BBS_ID} 
+		AND A.SEQ = #{SEQ}
+		AND A.DEPTH = #{DEPTH}	   
+	</select>
+	
+	<!--수정시 파일정보  -->
+	<select id="BBS_ATTACHMENT_R001"  resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT BBS_ID, FILE_NAME, FILE_PATH, SEQ
+		FROM   BBS_ATTACHMENT
+		WHERE  BBS_ID = #{BBS_ID}
+		AND    DEL_FLAG = 'N'
+	</select>
+	
+	<!-- 첨부파일 삭제 -->	
+	<update id="BBS_ATTACHMENT_U001">
+		UPDATE BBS_ATTACHMENT
+		SET DEL_FLAG = 'Y'
+		WHERE BBS_ID = #{BBS_ID}
+		AND SEQ = #{SEQ}
+	</update>
+	
+	<!-- 게시글 수정 수정 -->
+	<update id="BOARD_U001">
+		UPDATE BOARD
+		SET TITLE=#{TITLE}, CONTENTS=#{CONTENTS}, BBS_FILE=#{BBS_FILE}, CHANEL_NAME=#{CHANEL_NAME}, COMPLETE_DATE=#{COMPLETE_DATE}, CONFIRM_USER=#{CONFIRM_USER}, COMPLETION_DATE=#{COMPLETION_DATE}
+		WHERE BOARD_ID=#{BOARD_ID} AND BBS_ID=#{BBS_ID} AND SEQ=#{SEQ}
+	</update>
+	
+	<!-- 등록파일정보 삭제 -->
+	<delete id="BBS_ATTACHMENT_D001">
+		DELETE FROM BBS_ATTACHMENT
+		WHERE BBS_ID = #{BBS_ID} 	
+	</delete>
+	
+	<!-- 파일등록정보 등록 -->
+	<insert id="BBS_ATTACHMENT_C001" >
+		INSERT INTO BBS_ATTACHMENT(BBS_ID,SEQ,FILE_NAME,FILE_PATH,DEL_FLAG)
+		VALUES(
+				#{BBS_ID},
+			   	(SELECT COALESCE(MAX(SEQ),0)+1  FROM BBS_ATTACHMENT WHERE BBS_ID = #{BBS_ID}),
+			   	#{FILE_NAME},
+			   	#{FILE_PATH},
+			   	'N'
+			   )
+	</insert>
+	
+	<!-- 답글 부모 정보 가져오기 -->
+	<select id="BOARD_R002" resultType="hashMap" resultMap="QUERY_RESULT">
+		SELECT MAX(DEPTH) DEPTH
+		FROM BOARD
+		WHERE BOARD_ID=#{BOARD_ID} AND BBS_ID=#{BBS_ID}
+	</select>
+	
+	<!-- 게시글 신규 작성 -->
+	<insert id="BOARD_C001">
+		INSERT INTO BOARD (
+						BOARD_ID,
+						BBS_ID, 
+						SEQ, 
+						DEPTH, 
+						TITLE, 
+						CONTENTS, 
+						BBS_USER, 
+						BBS_REG_DATE, 
+						BBS_FILE, 
+						COUNT, 
+						STATE, 
+						CHANEL_NAME, 
+						COMPLETION_DATE, 
+						BBS_REG_TIME, 
+						DEL_YN,
+						CONFIRM_USER
+						)
+			VALUES( 
+					#{BOARD_ID},
+			<choose>
+				<when test="DETAIL_STATE != null">
+					#{BBS_ID}, 
+					#{SEQ},
+				</when>
+				<otherwise>
+					#{BBS_ID}, 
+					NEXT VALUE FOR BOARD_SEQ,
+				</otherwise>
+			</choose>
+					#{DEPTH}, 
+					#{TITLE}, 
+					#{CONTENTS}, 
+					#{BBS_USER}, 
+					#{BBS_REG_DATE}, 
+					#{BBS_FILE}, 
+					#{COUNT}, 
+					#{STATE}, 
+					#{CHANEL_NAME}, 
+					#{COMPLETION_DATE}, 
+					CURRENT_TIME, 
+					#{DEL_YN},
+					#{CONFIRM_USER}
+				)				
+	</insert>
+</mapper>

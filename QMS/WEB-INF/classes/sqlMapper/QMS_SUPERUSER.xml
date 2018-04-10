@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="EUC-KR" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="QMS_SUPERUSER">
+	<!--resultMap-->
+	<resultMap id="QUERY_RESULT" type="hashMap">
+		<result property="PROJECTREGDATE"            	column="PROJECTREGDATE"     javaType="String" /> 
+		<result property="PROJECTSTARTDATE"          	column="PROJECTSTARTDATE"   javaType="String" /> 
+		<result property="PROJECTENDDATE"            	column="PROJECTENDDATE"     javaType="String" /> 
+		<result property="USERCOUNT"            	 	column="USERCOUNT"      	javaType="String" />
+		 <result property="CNT"            	 			column="CNT"      	  		javaType="String" />
+		 <result property="ROW_SEQ"            	 		column="ROW_SEQ"      	  	javaType="String" />
+	</resultMap>
+	
+	<!-- 프로젝트 관리 -->
+	<select id="PROJECTINFO_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT PROJECTID, PROJECTNAME, PROJECTREGDATE, PROJECTSTARTDATE, PROJECTENDDATE, PROJECTMANAGERID, BIGO
+		FROM   PROJECTINFO
+		ORDER BY PROJECTREGDATE DESC
+	</select>
+	
+	<!-- 프로젝트 현황 -->
+	<select id="PROJECTINFO_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT a.PROJECTID, a.PROJECTNAME, a.PROJECTSTARTDATE, a.PROJECTENDDATE, a.PROJECTMANAGERID,
+	           (SELECT b.USERNAME  FROM USERINFO b WHERE b.USERID = a.PROJECTMANAGERID) AS USERNAME,
+	           (SELECT COUNT(*) FROM PROJECTUSERINFO c WHERE c.PROJECTID = a.PROJECTID) AS USERCOUNT,
+	           '1' AS BOARDCOUNT
+		FROM   PROJECTINFO a
+		ORDER BY PROJECTREGDATE DESC
+	</select>
+	
+	<!-- 프로젝트 수정전 조회 -->
+	<select id="PROJECTINFO_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT A.PROJECTID, A.PROJECTNAME, A.PROJECTSTARTDATE, A.PROJECTENDDATE, A.BIGO, A.PROJECTREGDATE, A.PROJECTMANAGERID
+		FROM   PROJECTINFO A	
+		WHERE  A.PROJECTID = #{PROJECTID}
+	</select>
+	
+	<!-- PMS가입자 정보 조회 -->
+	<select id="USERINFO_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT COUNT(*) CNT
+		FROM   USERINFO	
+		WHERE  USERID = #{USERID}
+	</select>
+	
+	<!-- 프로젝트 수정 -->
+	<update id="PROJECTINFO_U001" parameterType="hashMap">
+	    UPDATE PROJECTINFO A
+		SET   A.PROJECTMANAGERID = #{PROJECTMANAGERID}	
+		    , A.PROJECTNAME      = #{PROJECTNAME}
+			, A.PROJECTSTARTDATE = #{PROJECTSTARTDATE}
+			, A.PROJECTENDDATE   = #{PROJECTENDDATE}
+			, A.BIGO             = #{BIGO}
+		WHERE A.PROJECTID = #{PROJECTID}       
+	</update>
+	
+	<!-- 프로젝트유저정보수정(PM 아이디 수정) -->
+	<update id="PROJECTUSERINFO_U001" parameterType="hashMap">
+	    UPDATE PROJECTUSERINFO A
+		SET    A.USERID = #{USERID} 
+		WHERE  A.USERID = #{USERID} 
+		AND    A.PROJECTID = #{PROJECTID}
+	</update>
+	
+	<!-- 프로젝트 정보 입력 -->
+	<insert id="PROJECTINFO_C001" parameterType="hashMap">
+	    INSERT INTO PROJECTINFO                                                                 
+		VALUES(                
+		#{PROJECTID}, 					 
+		#{PROJECTNAME},                     
+		#{PROJECTSTARTDATE},                     
+		#{PROJECTENDDATE},                     
+		#{PROJECTMANAGERID},                     
+		#{BIGO},                     
+		CURRENT_DATE           
+		)                      
+	</insert>
+	
+	<!-- 프로젝터 유저정보 입력 -->
+	<insert id="PROJECTUSERINFO_C001" parameterType="hashMap">
+	    INSERT INTO PROJECTUSERINFO(
+              PROJECTID,                  
+              USERID,                     
+              AUTHORITYGRADE,             
+              BIGO                        
+              )VALUES(                    
+              #{PROJECTID},                          
+              #{USERID},                          
+              '00',                       
+              #{BIGO}    
+		)                                                 
+	</insert>
+	
+	<!-- 메뉴타입 조회 -->
+	<select id="MENUTYPE_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT MENU_TYPE_ID, MENU_KR_NAME
+		FROM   MENUTYPE	
+	</select>
+	
+	<!-- 디폴트 메뉴정보 입력 -->
+	<insert id="MENU_C001" parameterType="hashMap">
+	    INSERT INTO MENU
+        VALUES(
+              #{PROJECTID},                          
+              #{BOARD_ID},
+			  #{SORT_SEQ},
+			  #{MENU_TYPE_ID},
+			  'Y',
+              #{KOR_MENU_NAME},                       
+              '',                       
+              CURRENT_DATE,    
+              '00'                       
+		)                                                 
+	</insert>
+	
+	<!-- 프로젝터 정보 삭제 -->
+	<delete id="PROJECTINFO_D001" parameterType="hashMap">
+	    DELETE
+		FROM   PROJECTINFO A
+		WHERE  A.PROJECTID = #{PROJECTID}
+	</delete>
+	<delete id="PROJECTUSERINFO_D001" parameterType="hashMap">
+	    DELETE
+		FROM   PROJECTUSERINFO A
+		WHERE  A.PROJECTID = #{PROJECTID}
+	</delete>
+	<delete id="MENU_D001" parameterType="hashMap">
+	    DELETE
+		FROM   MENU A
+		WHERE  A.PROJECT_ID = #{PROJECTID}
+	</delete>
+	
+	
+	<!-- 유저정보 입력 -->
+	<insert id="USERINFO_C002" parameterType="hashMap">
+	    INSERT INTO USERINFO(	
+			  USERID,				
+			  USERNAME,			
+			  USERPASSWORD,		
+			  USERIP,				
+			  BIGO					
+			) VALUES (
+			  #{USERID},
+			  #{USERNAME},
+			  #{USERPASSWORD},
+			  #{USERIP},
+			  #{BIGO}
+			)                                                 
+	</insert>
+	
+	<!-- 프로젝트 가입-->
+	<insert id="PROJECTUSERINFO_C002" parameterType="hashMap">
+	    INSERT INTO PROJECTUSERINFO(
+	       PROJECTID, 
+	       USERID, 
+	       AUTHORITYGRADE
+	    )VALUES(
+           #{PROJECTID},
+           #{USERID},
+           '99')                                                 
+	</insert>
+	
+	<!-- 프로젝트 사용자정보 조회 -->
+	<select id="USERINFO_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT	USERID, USERNAME, USERIP, BIGO
+		FROM    USERINFO	
+	</select>
+	
+	<!-- 프로젝트 가입사용자 조회 -->
+	<select id="PROJECTUSERINFO_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT INN.*
+        FROM  (SELECT ROW_NUMBER() OVER () as ROW_SEQ, INNER_TABLE.*  
+               FROM (SELECT A.USERID, A.USERNAME, A.BIGO, C.AUTH_NAME, B.AUTHORITYGRADE
+                     FROM  USERINFO A, PROJECTUSERINFO B, AUTHORITY C
+                     WHERE A.USERID = B.USERID
+                     AND    B.AUTHORITYGRADE = C.AUTHORITYGRADE
+                     AND    B.PROJECTID = #{PROJECTID}
+                     ORDER BY A.USERNAME ASC
+               ) INNER_TABLE
+        ) INN
+        WHERE ROW_SEQ BETWEEN ${FROM_SEQ} AND ${TO_SEQ}
+	</select>
+	<!-- 프로젝트 가입사용자 총건수 조회 -->
+	<select id="PROJECTUSERINFO_R002" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT COUNT(A.USERID) AS CNT
+        FROM  USERINFO A, PROJECTUSERINFO B, AUTHORITY C
+        WHERE A.USERID = B.USERID
+        AND    B.AUTHORITYGRADE = C.AUTHORITYGRADE
+        AND    B.PROJECTID = #{PROJECTID}
+	</select>
+	
+	<!-- Superuser 프로젝트 가입사용자 조회 -->
+	<select id="USERINFO_R003" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT INN.*
+        FROM  (SELECT ROW_NUMBER() OVER () as ROW_SEQ, INNER_TABLE.*  
+               FROM (                                                 
+                     SELECT A.USERID, A.USERNAME, A.BIGO
+                     FROM  USERINFO A                        
+                     ORDER BY A.USERNAME ASC
+               ) INNER_TABLE
+        ) INN
+        WHERE ROW_SEQ BETWEEN ${FROM_SEQ} AND ${TO_SEQ}
+	</select>
+	<!-- superuser 가입사용자 총건수 조회 -->
+	<select id="USERINFO_R004" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT COUNT(A.USERID) AS CNT
+        FROM  USERINFO A
+	</select>
+	
+	<!-- WAS 기동시 수행하는 근태관리 배치 -->
+	<select id="ATTENTIONMANAGER_R001" parameterType="hashMap" resultMap="QUERY_RESULT">
+	    SELECT COUNT(USERID) AS CNT
+        FROM   ATTENTIONMANAGER
+        WHERE  ATTENTION_DATE = CURRENT_DATE
+        AND    USERID = #{USERID}
+	</select>
+	<!-- WAS 기동시 수행하는 근태관리 배치 -->
+	<insert id="ATTENTIONMANAGER_C001" parameterType="hashMap">
+	    INSERT INTO ATTENTIONMANAGER(USERID, ATTENTION_DATE, IN_TIME)
+        VALUES(
+           #{USERID},
+           CURRENT_DATE,
+           #{IN_TIME}
+        )
+	</insert>
+	<!-- WAS 기동시 수행하는 근태관리 배치 -->
+	<insert id="ATTENTIONMANAGER_U001" parameterType="hashMap">
+	    UPDATE ATTENTIONMANAGER	
+        SET    OUT_TIME = #{OUT_TIME}
+        WHERE  ATTENTION_DATE = CURRENT_DATE
+        AND    USERID = #{USERID}
+        )
+	</insert>
+</mapper>
