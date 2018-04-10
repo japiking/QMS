@@ -55,7 +55,8 @@ public class lgn_login_do implements SpbBiz {
     		String Ip							= userMap.get("USERIP");
     		
     		System.out.println("LSJ---11>>"+userMap.toString());
-    		System.out.println("LSJ---22>>"+userMap);
+    		System.out.println("LSJ---22>>"+userMap.get("USERID"));
+    		System.out.println("LSJ---33>>"+StringUtil.null2void(userMap.get("USERID")).trim());
     		/* 
     		if( requestIp != null) {
     			if( !"".equals(Ip) && !"".equals(requestIp) && !requestIp.equals(Ip) ) {
