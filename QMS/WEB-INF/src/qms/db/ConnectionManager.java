@@ -20,7 +20,7 @@ public class ConnectionManager {
 	public Connection getConnection() throws Exception {
 		 Context initCtx	= new InitialContext();
 		 Context envCtx		= (Context)initCtx.lookup("java:comp/env");
-		 DataSource ds		= (DataSource)envCtx.lookup("jdbc/QMS");
+		 DataSource ds		= (DataSource)envCtx.lookup("jdbc/qmsDB");
 		 
 		 return ds.getConnection();
 	}
