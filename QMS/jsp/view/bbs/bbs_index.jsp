@@ -154,10 +154,6 @@
 						}catch(Exception e){
 							
 						}
-						
-						
-						
-// 						LogUtil.getInstance().debug("LSJ---tot>>"+tot);
 						tot_progress += tot;
 			%>
 		  <%
