@@ -163,6 +163,7 @@
 		  <%
 					}	// end for
 				}		// end else
+				tot_progress = tot_progress * 100;
 		  %>
 			  <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%=tot_progress%>%">
 			    <%=tot_progress%>%
