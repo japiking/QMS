@@ -1,3 +1,4 @@
+<%@page import="java.math.BigDecimal"%>
 <%@page import="java.util.Vector"%>
 <%@page import="qms.wbs.WBSUtil"%>
 <%@page import="qms.wbs.WBSNode"%>
@@ -160,6 +161,10 @@
 					}	// end for
 				}		// end else
 				tot_progress = tot_progress * 100;
+							
+				BigDecimal bd3		 = new BigDecimal(String.valueOf(tot_progress));
+				BigDecimal calc_rlt3 = bd3.setScale(2, BigDecimal.ROUND_DOWN);
+				tot_progress 				 = Long.parseLong(calc_rlt3.toString());
 		  %>
 			  <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%=tot_progress%>%">
 			    <%=tot_progress%>%
