@@ -30,7 +30,7 @@ public class StringUtil {
 			return def;
 		}
 		
-		return (String)str;
+		return String.valueOf(str);
 	}
 	
 	public static int null2zero(Object str) {
