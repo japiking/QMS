@@ -230,6 +230,5 @@
         SET    OUT_TIME = #{OUT_TIME}
         WHERE  ATTENTION_DATE = CURRENT_DATE
         AND    USERID = #{USERID}
-        )
 	</insert>
 </mapper>
