@@ -30,6 +30,9 @@ public class WebSocket {
         String replymessage = "echo "+message;
         LOG.debug("send to client : "+replymessage);
         
+        userSession.getUserProperties().put("NAME", "SANGJIN");
+        userSession.getUserProperties().get("NAME");
+        
         userSession.getBasicRemote().sendText("LSJ----------->>>111");
         
         return replymessage;
