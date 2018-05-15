@@ -5,14 +5,17 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.server.ServerEndpoint;
 
+import org.apache.log4j.Logger;
+
 @ServerEndpoint("/websocket")
 public class WebSocket {
+	static Logger LOG = Logger.getLogger(WebSocket.class);
     /***
      * 웹 소켓이 연결되면 호출되는 이벤트
      */
     @OnOpen
     public void handleOpen(){
-        System.out.println("client is now connected...");
+    	LOG.debug("client is now connected...");
     }
     /**
      * 웹 소켓으로부터 메시지가 오면 호출되는 이벤트
@@ -21,9 +24,9 @@ public class WebSocket {
      */
     @OnMessage
     public String handleMessage(String message){
-        System.out.println("receive from client : "+message);
+    	LOG.debug("receive from client : "+message);
         String replymessage = "echo "+message;
-        System.out.println("send to client : "+replymessage);
+        LOG.debug("send to client : "+replymessage);
         return replymessage;
     }
     /**
@@ -31,7 +34,7 @@ public class WebSocket {
      */
     @OnClose
     public void handleClose(){
-        System.out.println("client is now disconnected...");
+    	LOG.debug("client is now disconnected...");
     }
     /**
      * 웹 소켓이 에러가 나면 호출되는 이벤트
@@ -40,5 +43,6 @@ public class WebSocket {
     @OnError
     public void handleError(Throwable t){
         t.printStackTrace();
+        LOG.debug(t.getMessage());
     }
 }
