@@ -20,7 +20,7 @@ public class WebSocket {
     	LOG.debug("client is now connected...");
     }
     /**
-     * 웹 소켓으로부터 메시지가 오면 호출되는 이벤트
+     * 웹 소켓으로부터 메시지가 오면 호출되는 이벤트 
      * @param message
      * @return
      */
